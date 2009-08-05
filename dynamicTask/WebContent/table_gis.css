@@ -1,0 +1,51 @@
+body {
+	font-size:12px;
+		margin: 0;
+}
+
+table.bg1{
+	border:1px solid #DADCD4;
+	border-collapse:collapse;
+	
+}
+td.bg1{
+	padding:4px 0px;
+}
+
+td.bg2{
+	padding:4px 0px;
+	padding-left:1px;
+}
+
+
+.btn_search{
+	background-image:url(../img/btn_serach.gif);
+	width:59px;
+	height:23px;
+	border:0px;
+}
+
+select
+{
+	height:18px; 
+	font-size:12px;
+}
+.text
+{
+height:13px;
+}
+input.txt{
+	border:1px solid #B1B1B1;
+}
+
+    .button { margin-top:10px; border:0; background:url(../images/btn.gif); height:22px; color:#ffffff; font-size:12px; font-weight:bold; letter-spacing:2px; width:55px; padding-bottom:2px; padding-top:3px; cursor:pointer;}
+	
+	.btn_div{ width:85px;height:20px;font-size:12px;border:1px solid #A4B3C8; background-color:#DFE7EF; }
+	
+
+	.bgcolor1{
+		background-color:#FFFFFF;
+	}
+	.bgcolor2{
+		background-color:#EAFFFF;
+	}
