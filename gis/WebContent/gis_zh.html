@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<%@page contentType="text/html" pageEncoding="utf-8"%>
+<%@taglib uri="http://www.esri.com/adf/web" prefix="a"%>
+<%@taglib uri="http://java.sun.com/jsf/core" prefix="f"%>
+<%@taglib uri="http://java.sun.com/jsf/html" prefix="h"%>
+<%@taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>QHQXGIS</title>
+<style type="text/css">
+html,body { margin:0; padding:0; font-size:12px; color:#333333;} 
+</style>
+<link rel="stylesheet" title="base" href="css/base-style.css"
+	type="text/css" media="screen" />
+<link rel="stylesheet" title="base" href="css/esri_styles.css"
+	type="text/css" media="screen" />
+<link rel="stylesheet" title="base" href="css/results.css"
+	type="text/css" media="screen" />
+<link rel="stylesheet" title="base" href="css/taskmenu.css"
+	type="text/css" media="screen" />
+<link rel="stylesheet" title="base" href="themes/blue.css"
+	type="text/css" media="screen" />
+
+<script type="text/javascript" language="javascript"
+	src="js/resource.js"></script>
+<script type="text/javascript" language="javascript"
+	src="js/esri_navigator.js"></script>
+<script type="text/javascript" language="javascript" src="js/slider.js"></script>
+<script type="text/javascript" language="javascript" src="js/taskbox.js"></script>
+<script type="text/javascript" language="javascript"
+	src="js/mapviewer.js"></script>
+<script type="text/javascript" language="javascript" src="js/results.js"></script>
+<script type="text/javascript" language="Javascript"
+	src="js/esri_edit.js"></script>
+<script type="text/javascript" language="Javascript"
+	src="js/esri_colorchooser.js"></script>
+<script type="text/javascript" language="javascript"
+	src="js/identify.js"></script>  
+</head>
+<body>
+<div id="qhqxgis" onload="initLayout();">
+<f:view>
+<a:context value="#{mapContext}" />
+<h:form id="mapForm">
+<table>
+<tr><td style="padding-top:1px; vertical-align:top;">
+	<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr><td><img src="tr_top.gif" width="200" height="45" /></td></tr>
+    <tr><td style="background-image:url(tr_mi.gif); width:200px; height:540px; vertical-align:top" align="center">  	 
+    	 <a:toc id="toc1" value="#{mapContext.webToc}" mapId="map1" style="height:540px; width:200px" clientPostBack="true" /> 
+    </td></tr>
+    <tr><td><img src="tr_bo.gif" width="200" height="13" /></td></tr>
+    </table>
+</td>
+<td width="100%" style="padding-top:1px;">
+	<table cellpadding="0" cellspacing="0" border="0"><tr><td>
+		<div id="content" style="position: absolute; top: 1px; left: 200px; z-index: 1;">
+			<a:map value="#{mapContext.webMap}" id="map1" width='800' height='600' scaleBar="#{mapContext.attributes['webappScaleBar']}" />
+
+			<div id="overview" style="display: none">
+			<a:overview id="ov1" value="#{mapContext.webOverview}" mapId="map1" width="100" height="70" lineColor="#f00" />
+			</div>
+		</div>
+		<div id="tool" style="position: absolute; top: 1px; left: 200px; z-index: 2;">
+			<div style="float: left"><a:task id="mapToolsTask"
+				value="#{mapContext.attributes.webappMapToolsTask}"
+				taskInfo="#{mapContext.attributes.webappMapToolsTask.taskInfo}"
+				mapId="map1" windowingSupport="false" style="padding:0px;margin:0px;"
+				xslFile="maptoolstask.xsl" /></div>
+			<div style="float: left"><input width="25px" type="image"
+				height="25px" title="Toggle Overview Map"
+				onmouseout="//EsriUtils.setImageSrc(this, 'images/show-overview-map.png');"
+				onclick="esriToggleOverviewMap(); return false;"
+				onmousedown="//EsriUtils.setImageSrc(this, 'images/show-overview-map.png');"
+				onmouseover="//EsriUtils.setImageSrc(this, 'images/show-overview-map.png');"
+				onload="EsriUtils.setImageSrc(this, 'images/show-overview-map.png');"
+				src="images/show-overview-map.png"
+				id="button_mapToolsTask_action_toggleOverview"
+				name="button_mapToolsTask_action_toggleOverview" />
+			</div>
+		</div>
+    </td></tr></table>
+</td>
+</tr>
+<tr><td style="background-image:url(excel-bo.jpg); width:998px; height:30px;" colspan="2"></td></tr>
+</table>
+</h:form>
+</f:view></div>
+</body>
+</html>
+
