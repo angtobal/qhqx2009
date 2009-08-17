@@ -122,6 +122,7 @@ public class CustomRasterRender {
 		//创建颜色坡度 
 		IAlgorithmicColorRamp ramp = (IAlgorithmicColorRamp) serverContext.createObject(AlgorithmicColorRamp.getClsid());
 		ramp.setSize(numOfClass);
+		//ramp.createRamp(arg0);
 		
 		//为分级创建symbol
 		IFillSymbol fillSymbol = (IFillSymbol) serverContext.createObject(SimpleFillSymbol.getClsid());
@@ -136,11 +137,11 @@ public class CustomRasterRender {
 			//color.setRGB(0xFF0000);
 			//color.setRGB(a[i]);
 			color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-			color.setTransparency((byte)100);
+			color.setTransparency((byte)50);
 			fillSymbol.setColor(color);
 			classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
 			classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
-			//classifyRenderer.setLabel(i, "class" + i + classifyRenderer.getBreak(i));
+			classifyRenderer.setLabel(i, " <" + classifyRenderer.getBreak(i));
 			//color = null;
 		}
 		

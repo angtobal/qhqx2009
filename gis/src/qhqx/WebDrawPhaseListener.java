@@ -86,7 +86,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			if(paramMap.get(PICTURE_HEAD) != null){
 				realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
 			}else{
-				realTimeSurface.setPicHead("Õº∆¨√Ë ˆ–≈œ¢...");
+				realTimeSurface.setPicHead(" ");
 			}
 			
 			try {
@@ -143,7 +143,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		newToc.init(webContext);
 		
 		webContext.getWebToc().destroy();
-		newToc.setExpandLevel(2);
+		newToc.setExpandLevel(3);
 		webContext.setWebToc(newToc);
 		
 		webContext.refresh();
@@ -202,8 +202,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				realTimeSurface.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
 				realTimeSurface.setLocalMapResID("ags1");
 				realTimeSurface.setPid(paramMap.get(PID).toString());
-				//realTimeSurface.setBase(paramMap.get(BASE).toString());
-				realTimeSurface.setBase("0");
+				realTimeSurface.setBase(paramMap.get(BASE).toString());
 				realTimeSurface.setInterval(paramMap.get(INTERVAL).toString());
 				if(paramMap.get(FeatureName) != null){
 					realTimeSurface.setFeatureName(paramMap.get(FeatureName).toString());
@@ -211,7 +210,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				if(paramMap.get(PICTURE_HEAD) != null){
 					realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
 				}else{
-					realTimeSurface.setPicHead("Õº∆¨√Ë ˆ–≈œ¢...");
+					realTimeSurface.setPicHead(" ");
 				}
 				try {
 					//realTimeSurface.generateContout(webContext, "servertask");
@@ -235,7 +234,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				picBuild.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
 				picBuild.setLocalMapResID("ags1");
 				picBuild.setPid(paramMap.get(PID).toString());
-				picBuild.setBase("0");
+				picBuild.setBase(paramMap.get(BASE).toString());
 				picBuild.setInterval(paramMap.get(INTERVAL).toString());
 				picBuild.setFileName(paramMap.get(FILE_NAME).toString());
 				if(paramMap.get(FeatureName) != null){
@@ -262,7 +261,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			newToc.init(webContext);
 			
 			webContext.getWebToc().destroy();
-			newToc.setExpandLevel(2);
+			newToc.setExpandLevel(3);
 			webContext.setWebToc(newToc);
 			
 			webContext.refresh();

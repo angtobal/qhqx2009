@@ -135,12 +135,9 @@ public class RealTimeContour {
 	
 	public void gpResultDisplay() throws IOException{
 		
-		System.out.println("display");
 		AGSLocalMapResource localResource = (AGSLocalMapResource) webContext.getResourceById(localMapResID);
 		MapServer localMapServer = localResource.getLocalMapServer();
 		localMapServer.refreshServerObjects();
-		
-//		changeRasterLyrRender(localResource);
 		
 		try {
 			this.generateContout("servertask");
@@ -186,7 +183,6 @@ public class RealTimeContour {
 		changeRasterLyrRender(localResource);
 		webContext.getWebGraphics().clearGraphics();
 		
-		
 		//ADFÖÐ¸Ä±äSourceID£¬¸Ä±äÒ³ÃæÏÔÊ¾Í¼²ã
 		AGSMapFunctionality mapFunc = (AGSMapFunctionality) localResource.getFunctionality(MapFunctionality.FUNCTIONALITY_NAME);
 		MapServerInfo adfMapServerInfo = mapFunc.getMapServerInfo();
@@ -199,7 +195,6 @@ public class RealTimeContour {
 			if(i == 1 || i == 2){
 				adfLayerDescriptions[i].setSourceID(JobID);
 				adfLayerDescriptions[i].setVisible(true);
-				System.out.println("1,2");
 			}
 			//Ìæ»»Í¼²ã
 			if(i == 3){
@@ -221,17 +216,21 @@ public class RealTimeContour {
 		ge.setSymbol(label);
 		webContext.getWebGraphics().addGraphics(ge);
 		
-		WebPictureMarkerSymbol pic = new WebPictureMarkerSymbol();
-		System.out.println(this.featureName);
-		pic.setURL(new java.net.URL("http://localhost:8080/gis/images/" + this.featureName + ".jpg"));
-		GraphicElement picGe = new GraphicElement();
-		//picGe.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX()+1, webContext.getWebMap().getCurrentExtent().getMinY()-1));
-		picGe.setGeometry(new WebPoint(103.5, 35));
-		picGe.setSymbol(pic);
+		try{
+			WebPictureMarkerSymbol pic = new WebPictureMarkerSymbol();
+			System.out.println(this.featureName);
+			pic.setURL(new java.net.URL("http://localhost:8080/gis/images/" + this.featureName + ".jpg"));
+			GraphicElement picGe = new GraphicElement();
+			//picGe.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX()+1, webContext.getWebMap().getCurrentExtent().getMinY()-1));
+			picGe.setGeometry(new WebPoint(103.5, 35));
+			picGe.setSymbol(pic);
+			webContext.getWebGraphics().addGraphics(picGe);
+		}catch(NullPointerException err){
+			System.out.println(this.featureName + " Í¼ÀýÎ´ÕÒµ½,Í¼ÀýÌí¼ÓÊ§°Ü");
+		}
 		
 		//MapImage img1 = (MapImage)webContext.getWebMap().exportMapImage();
 		
-		webContext.getWebGraphics().addGraphics(picGe);
 		if(featureName.equals("fengsu") || featureName.equals("fengxiang")){
 			WindDirectionSpeed wind = new WindDirectionSpeed();
 			wind.setGContext(webContext);
