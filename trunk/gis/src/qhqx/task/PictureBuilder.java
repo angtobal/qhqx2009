@@ -191,11 +191,16 @@ public class PictureBuilder {
 		container.addElement(textElement, 0);
 		
 		PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
-		pngPicElem.importPictureFromFile("c:\\pic\\feature\\" + WeatherRenderInfo.getName(this.featureName) + ".jpg");
-		IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-		env.putCoords(103.5, 31.5, 104.5, 38.5);
-		pngPicElem.setGeometry((IGeometry) env);
-		container.addElement(pngPicElem, 0);
+		try{
+			pngPicElem.importPictureFromFile("c:\\pic\\feature\\" + WeatherRenderInfo.getName(this.featureName) + ".jpg");
+			IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
+			env.putCoords(103.5, 31.5, 104.5, 38.5);
+			pngPicElem.setGeometry((IGeometry) env);
+			container.addElement(pngPicElem, 0);
+		}catch(NullPointerException err){
+			System.out.println("所选要素图例不存在 " + this.featureName);
+		}
+		
 		
 		AgsObjAccess access = new AgsObjAccess(localResource.getLocalMapServer(), localResource.getServerContext());
 		
@@ -240,14 +245,20 @@ public class PictureBuilder {
 		MapImage mapim = localResource.getMapServer().exportMapImage(mapFunc.getMapDescription(), idesc);
 		fileOutStream.write(mapim.getImageData());
 		fileOutStream.close();
-		System.out.println("目标文件生成" + " " + this.fileName);
+		System.out.println("目标文件生成 " + this.fileName);
 		
 		mapFunc.getLayerDescriptions()[1].setVisible(true);
 		container.deleteAllElements();
 		
-		java.net.URL url = new java.net.URL("http://http://222.18.139.70:8080/GisStutsPic_auto_SavePic.action?FILENAME=" + this.fileName + ".JPG");
-		URLConnection urlConn = url.openConnection();
-		//urlConn.connect();
+		try{
+			java.net.URL url = new java.net.URL("http://222.18.139.70:8080/GisStutsPic_auto_SavePic.action?FILENAME=" + this.fileName + ".JPG");
+			@SuppressWarnings("unused")
+			URLConnection urlConn = url.openConnection();
+			//urlConn.connect();
+		}catch(Exception err){
+			System.out.println(err.getMessage());
+		}
+		
 	}
 	
 	private void changeADFLyrSourceByID(AGSLocalMapResource localResource) throws AutomationException, IOException{
