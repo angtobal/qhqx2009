@@ -4,6 +4,7 @@
 package qhqx.task;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 
@@ -219,14 +220,20 @@ public class RealTimeContour {
 		ge.setSymbol(label);
 		webContext.getWebGraphics().addGraphics(ge);
 		
-		WebPictureMarkerSymbol pic = new WebPictureMarkerSymbol();
-		System.out.println(this.featureName);
-		pic.setURL(new java.net.URL("http://localhost:8080/dynamicTask/images/" + this.featureName + ".jpg"));
-		GraphicElement picGe = new GraphicElement();
-		picGe.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX(), webContext.getWebMap().getCurrentExtent().getMinY()));
-		picGe.setSymbol(pic);
+		try{
+			WebPictureMarkerSymbol pic = new WebPictureMarkerSymbol();
+			System.out.println(this.featureName);
+			pic.setURL(new java.net.URL("http://localhost:8080/dynamicTask/images/" + this.featureName + ".jpg"));
+			GraphicElement picGe = new GraphicElement();
+			picGe.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX(), webContext.getWebMap().getCurrentExtent().getMinY()));
+			picGe.setSymbol(pic);
+			webContext.getWebGraphics().addGraphics(picGe);
+		}catch(NullPointerException err){
+			System.out.println(this.featureName + " Í¼ÀýÎ´ÕÒµ½,Í¼ÀýÌí¼ÓÊ§°Ü");
+		}
 		
-		webContext.getWebGraphics().addGraphics(picGe);
+		
+		
 		
 		// refresh overview control.
 		WebOverview webOv = webContext.getWebOverview();
@@ -310,6 +317,17 @@ public class RealTimeContour {
 	}
 
 	public void setPicHead(String picHead) {
-		this.picHead = picHead;
+		String str = null;
+		if(picHead != null){
+			System.out.println(picHead.toString());
+			try {
+				byte[] temp = picHead.toString().getBytes("ISO-8859-1");
+				str = new String(temp, "UTF-8");
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		this.picHead = str;
 	}
 }
