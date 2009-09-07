@@ -9,19 +9,14 @@ import java.io.IOException;
 import java.util.Random;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
-import com.esri.adf.web.data.graphics.GraphicsLayer;
-import com.esri.arcgis.carto.CompositeGraphicsLayer;
-import com.esri.arcgis.carto.ICompositeGraphicsLayer;
 import com.esri.arcgis.carto.IElement;
 import com.esri.arcgis.carto.IGraphicsContainer;
-import com.esri.arcgis.carto.IGraphicsLayer;
 import com.esri.arcgis.carto.IImageDescription;
 import com.esri.arcgis.carto.IImageDisplay;
 import com.esri.arcgis.carto.IImageResult;
 import com.esri.arcgis.carto.IImageType;
 import com.esri.arcgis.carto.ILayer;
 import com.esri.arcgis.carto.ILegend;
-import com.esri.arcgis.carto.ILegendFormat;
 import com.esri.arcgis.carto.IMap;
 import com.esri.arcgis.carto.IMapDescription;
 import com.esri.arcgis.carto.IMapServerLayout;
@@ -30,7 +25,6 @@ import com.esri.arcgis.carto.ImageDescription;
 import com.esri.arcgis.carto.ImageDisplay;
 import com.esri.arcgis.carto.ImageType;
 import com.esri.arcgis.carto.Legend;
-import com.esri.arcgis.carto.LegendFormat;
 import com.esri.arcgis.carto.MapServer;
 import com.esri.arcgis.carto.PngPictureElement;
 import com.esri.arcgis.carto.SymbolBackground;
@@ -104,10 +98,28 @@ public class CustomMapLegend {
 	}
 	
 	public void customLegendStyle() throws AutomationException, IOException{
-		ILegendFormat legendForm = (ILegendFormat) serverContext.createObject(LegendFormat.getClsid());
-		legendForm.setVerticalItemGap(0);
-		legendForm.setHorizontalItemGap(0);
-		legendForm.setShowTitle(false);
+		/*ILegendFormat legendForm = (ILegendFormat) serverContext.createObject(LegendFormat.getClsid());
+		legendForm = legend.getFormat();*/
+		legend.getFormat().setVerticalItemGap(0);
+		legend.getFormat().setHorizontalItemGap(0);
+		legend.getFormat().setShowTitle(false);
+		System.out.println("horizontalPatchGap: " + legend.getFormat().getHorizontalPatchGap());
+		System.out.println(legend.getFormat().getDefaultPatchHeight());
+		System.out.println(legend.getFormat().getDefaultPatchWidth());
+		
+		legend.getFormat().setHorizontalPatchGap(0);
+		legend.getFormat().setVerticalPatchGap(-3);
+		legend.getFormat().setDefaultPatchHeight(6);
+		legend.getFormat().setDefaultPatchWidth(12);
+		for(int i = 0; i < legend.getItemCount(); i++){
+			System.out.println(i);
+			legend.getItem(i).setShowLabels(false);
+			legend.getItem(i).setShowDescriptions(false);
+		}
+		
+		System.out.println("horizontalPatchGap: " + legend.getFormat().getHorizontalPatchGap());
+		System.out.println(legend.getFormat().getDefaultPatchHeight());
+		System.out.println(legend.getFormat().getDefaultPatchWidth());
 	}
 
 	public IImageResult printLegend() throws AutomationException, IOException {
@@ -253,6 +265,7 @@ public class CustomMapLegend {
 			env2.putCoords(103.5, 31.5, 104.5, 38.5);
 			pngPicElem.setGeometry((IGeometry) env2);
 			container.addElement(pngPicElem, 0);
+			//container.addElement(legend.getItem(0).getGraphics().next(), 0);
 		}catch(NullPointerException err){
 			err.printStackTrace();
 			System.out.println("所选要素图例不存在 ");
