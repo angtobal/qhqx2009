@@ -98,6 +98,7 @@ public class CustomMapLegend {
 	}
 	
 	public void customLegendStyle() throws AutomationException, IOException{
+		double patchHeight;
 		/*ILegendFormat legendForm = (ILegendFormat) serverContext.createObject(LegendFormat.getClsid());
 		legendForm = legend.getFormat();*/
 		legend.getFormat().setVerticalItemGap(0);
@@ -109,8 +110,9 @@ public class CustomMapLegend {
 		
 		legend.getFormat().setHorizontalPatchGap(0);
 		legend.getFormat().setVerticalPatchGap(-3);
-		legend.getFormat().setDefaultPatchHeight(6);
-		legend.getFormat().setDefaultPatchWidth(12);
+		patchHeight = 6;
+		legend.getFormat().setDefaultPatchHeight(patchHeight);
+		legend.getFormat().setDefaultPatchWidth(patchHeight * 2);
 		for(int i = 0; i < legend.getItemCount(); i++){
 			System.out.println(i);
 			legend.getItem(i).setShowLabels(false);
@@ -131,8 +133,8 @@ public class CustomMapLegend {
 
 		IImageDisplay imgDisp = (IImageDisplay) serverContext
 				.createObject(ImageDisplay.getClsid());
-		imgDisp.setHeight(200);
-		imgDisp.setWidth(150);
+		imgDisp.setHeight(300);
+		imgDisp.setWidth(120);
 		imgDisp.setDeviceResolution(96);
 
 		IImageDescription imgDesc = (IImageDescription) serverContext
@@ -262,7 +264,7 @@ public class CustomMapLegend {
 			File tmpf = new File("c:\\pic\\feature2\\" + randomStr + ".jpg");
 			tmpf.delete();
 			IEnvelopeGEN env2 = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-			env2.putCoords(103.5, 31.5, 104.5, 38.5);
+			env2.putCoords(103.5, 31.5, 104.5, 37.5);
 			pngPicElem.setGeometry((IGeometry) env2);
 			container.addElement(pngPicElem, 0);
 			//container.addElement(legend.getItem(0).getGraphics().next(), 0);
