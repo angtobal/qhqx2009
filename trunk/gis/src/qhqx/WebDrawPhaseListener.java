@@ -14,15 +14,18 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
+import qhqx.ags.CustomMapLegend;
 import qhqx.task.PictureBuilder;
 import qhqx.task.RealTimeContour;
 
+import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
 import com.esri.adf.web.data.WebToc;
 import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.adf.web.faces.event.TaskEvent;
 import com.esri.adf.web.util.WebUtil;
+import com.esri.arcgis.interop.AutomationException;
 
 /**
  * @author yan
@@ -71,73 +74,22 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		System.out.println("interval = " + paramMap.get(INTERVAL).toString());
 		
 		if(paramMap.get(Task).toString().equals("realtime")){
-			RealTimeContour realTimeSurface = new RealTimeContour();
-			realTimeSurface.setWebContext(webContext);
-			realTimeSurface.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-			realTimeSurface.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-			realTimeSurface.setLocalMapResID("ags1");
-			realTimeSurface.setPid(paramMap.get(PID).toString());
-			//realTimeSurface.setBase(paramMap.get(BASE).toString());
-			realTimeSurface.setBase(paramMap.get(BASE).toString());
-			realTimeSurface.setInterval(paramMap.get(INTERVAL).toString());
-			if(paramMap.get(FeatureName) != null){
-				realTimeSurface.setFeatureName(paramMap.get(FeatureName).toString());
-			}
-			if(paramMap.get(PICTURE_HEAD) != null){
-				realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
-			}else{
-				realTimeSurface.setPicHead(" ");
-			}
-			
-			try {
-				//realTimeSurface.generateContout(webContext, "servertask");
-				realTimeSurface.gpResultDisplay();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			} /*catch (InterruptedException e) {
-				e.printStackTrace();
-			} */catch (IOException e) {
-				e.printStackTrace();
-			}
+			doRealtimeTask(webContext, paramMap);
 			
 		}else if(paramMap.get(Task).toString().equals("buildpic")){
-			if(paramMap.get(FILE_NAME) == null){
-				System.out.println("filename is null");
-				return;
-			}
-			PictureBuilder picBuild = new PictureBuilder();
-			picBuild.setWebContext(webContext);
-			picBuild.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-			picBuild.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-			picBuild.setLocalMapResID("ags1");
-			picBuild.setPid(paramMap.get(PID).toString());
-			picBuild.setBase(paramMap.get(BASE).toString());
-			picBuild.setInterval(paramMap.get(INTERVAL).toString());
-			picBuild.setFileName(paramMap.get(FILE_NAME).toString());
-			if(paramMap.get(FeatureName) != null){
-				picBuild.setFeatureName(paramMap.get(FeatureName).toString());
-			}
-			if(paramMap.get(PICTURE_HEAD) != null){
-				picBuild.setPictureHead(paramMap.get(PICTURE_HEAD).toString());
-			}else{
-				picBuild.setPictureHead("Õº∆¨√Ë ˆ–≈œ¢...");
-			}
-			try {
-				//realTimeSurface.generateContout(webContext, "servertask");
-				picBuild.gpResultDisplay();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			} /*catch (InterruptedException e) {
-				e.printStackTrace();
-			} */catch (IOException e) {
-				e.printStackTrace();
-			}
+			doPicbuildTask(webContext, paramMap);
 		}
 			
+		/*try {
+			@SuppressWarnings("unused")
+			CustomMapLegend mapLegend = new CustomMapLegend((AGSLocalMapResource) webContext.getResourceById("ags1"));
+			mapLegend.createLegend();
+		} catch (AutomationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		*/
 		
 		WebToc newToc = new WebToc();
 		newToc.init(webContext);
@@ -148,6 +100,8 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		
 		webContext.refresh();
 		//facesContext.responseComplete();
+		
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -178,6 +132,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	public void init(WebContext webContext) {
 		//wctx
 		System.out.println("first time");
+		
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap() != null){
 			Map<String, String> paramMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 			if(paramMap.get(PID) == null){
@@ -196,64 +151,10 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			}
 			
 			if(paramMap.get(Task).toString().equals("realtime")){
-				RealTimeContour realTimeSurface = new RealTimeContour();
-				realTimeSurface.setWebContext(webContext);
-				realTimeSurface.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-				realTimeSurface.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-				realTimeSurface.setLocalMapResID("ags1");
-				realTimeSurface.setPid(paramMap.get(PID).toString());
-				realTimeSurface.setBase(paramMap.get(BASE).toString());
-				realTimeSurface.setInterval(paramMap.get(INTERVAL).toString());
-				if(paramMap.get(FeatureName) != null){
-					realTimeSurface.setFeatureName(paramMap.get(FeatureName).toString());
-				}
-				if(paramMap.get(PICTURE_HEAD) != null){
-					realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
-				}else{
-					realTimeSurface.setPicHead(" ");
-				}
-				try {
-					//realTimeSurface.generateContout(webContext, "servertask");
-					realTimeSurface.gpResultDisplay();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				doRealtimeTask(webContext, paramMap);
 				
 			}else if(paramMap.get(Task).toString().equals("buildpic")){
-				if(paramMap.get(FILE_NAME) == null){
-					System.out.println("filename is null");
-					return;
-				}
-				PictureBuilder picBuild = new PictureBuilder();
-				picBuild.setWebContext(webContext);
-				picBuild.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-				picBuild.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-				picBuild.setLocalMapResID("ags1");
-				picBuild.setPid(paramMap.get(PID).toString());
-				picBuild.setBase(paramMap.get(BASE).toString());
-				picBuild.setInterval(paramMap.get(INTERVAL).toString());
-				picBuild.setFileName(paramMap.get(FILE_NAME).toString());
-				if(paramMap.get(FeatureName) != null){
-					picBuild.setFeatureName(paramMap.get(FeatureName).toString());
-				}
-				if(paramMap.get(PICTURE_HEAD) != null){
-					picBuild.setPictureHead(paramMap.get(PICTURE_HEAD).toString());
-				}else{
-					picBuild.setPictureHead("Õº∆¨√Ë ˆ–≈œ¢...");
-				}
-				try {
-					picBuild.gpResultDisplay();
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (RemoteException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				doPicbuildTask(webContext, paramMap);
 			}
 				
 			
@@ -265,6 +166,78 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			webContext.setWebToc(newToc);
 			
 			webContext.refresh();
+		}
+	}
+
+	/**
+	 * @param webContext
+	 * @param paramMap
+	 */
+	public void doPicbuildTask(WebContext webContext,
+			Map<String, String> paramMap) {
+		if(paramMap.get(FILE_NAME) == null){
+			System.out.println("filename is null");
+			return;
+		}
+		PictureBuilder picBuild = new PictureBuilder();
+		picBuild.setWebContext(webContext);
+		picBuild.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
+		picBuild.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
+		picBuild.setLocalMapResID("ags1");
+		picBuild.setPid(paramMap.get(PID).toString());
+		picBuild.setBase(paramMap.get(BASE).toString());
+		picBuild.setInterval(paramMap.get(INTERVAL).toString());
+		picBuild.setFileName(paramMap.get(FILE_NAME).toString());
+		if(paramMap.get(FeatureName) != null){
+			picBuild.setFeatureName(paramMap.get(FeatureName).toString());
+		}
+		if(paramMap.get(PICTURE_HEAD) != null){
+			picBuild.setPictureHead(paramMap.get(PICTURE_HEAD).toString());
+		}else{
+			picBuild.setPictureHead("Õº∆¨√Ë ˆ–≈œ¢...");
+		}
+		try {
+			picBuild.gpResultDisplay();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param webContext
+	 * @param paramMap
+	 */
+	public void doRealtimeTask(WebContext webContext,
+			Map<String, String> paramMap) {
+		RealTimeContour realTimeSurface = new RealTimeContour();
+		realTimeSurface.setWebContext(webContext);
+		realTimeSurface.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
+		realTimeSurface.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
+		realTimeSurface.setLocalMapResID("ags1");
+		realTimeSurface.setPid(paramMap.get(PID).toString());
+		realTimeSurface.setBase(paramMap.get(BASE).toString());
+		realTimeSurface.setInterval(paramMap.get(INTERVAL).toString());
+		if(paramMap.get(FeatureName) != null){
+			realTimeSurface.setFeatureName(paramMap.get(FeatureName).toString());
+		}
+		if(paramMap.get(PICTURE_HEAD) != null){
+			realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
+		}else{
+			realTimeSurface.setPicHead(" ");
+		}
+		try {
+			//realTimeSurface.generateContout(webContext, "servertask");
+			realTimeSurface.gpResultDisplay();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

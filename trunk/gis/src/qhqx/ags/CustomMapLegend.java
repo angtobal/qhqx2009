@@ -15,20 +15,14 @@ import com.esri.arcgis.carto.IImageDescription;
 import com.esri.arcgis.carto.IImageDisplay;
 import com.esri.arcgis.carto.IImageResult;
 import com.esri.arcgis.carto.IImageType;
-import com.esri.arcgis.carto.ILayer;
-import com.esri.arcgis.carto.ILegend;
-import com.esri.arcgis.carto.IMap;
 import com.esri.arcgis.carto.IMapDescription;
 import com.esri.arcgis.carto.IMapServerLayout;
 import com.esri.arcgis.carto.ISymbolBackground;
 import com.esri.arcgis.carto.ImageDescription;
 import com.esri.arcgis.carto.ImageDisplay;
 import com.esri.arcgis.carto.ImageType;
-import com.esri.arcgis.carto.Legend;
-import com.esri.arcgis.carto.MapServer;
 import com.esri.arcgis.carto.PngPictureElement;
 import com.esri.arcgis.carto.SymbolBackground;
-import com.esri.arcgis.carto.VerticalLegendItem;
 import com.esri.arcgis.carto.esriImageFormat;
 import com.esri.arcgis.carto.esriImageReturnType;
 import com.esri.arcgis.display.IRgbColor;
@@ -41,100 +35,66 @@ import com.esri.arcgis.geometry.Envelope;
 import com.esri.arcgis.geometry.IEnvelopeGEN;
 import com.esri.arcgis.geometry.IGeometry;
 import com.esri.arcgis.interop.AutomationException;
-import com.esri.arcgis.server.IServerContext;
 
 /**
  * @author yan
  * 
  */
-public class CustomMapLegend {
+public class CustomMapLegend extends LegendInfo {
 
-	/**
-	 * 
-	 */
-	private IServerContext serverContext;
-	private MapServer mapServer;
-
-	private IMap focusMap;
-	private ILayer layer;
-	private ILegend legend;
-	
 	private String randomStr;
+	private int lgdImgRetType;
 
-	public CustomMapLegend(AGSLocalMapResource localResource)
-			throws AutomationException, IOException {
-		serverContext = localResource.getServerContext();
-		mapServer = localResource.getLocalMapServer();
-		focusMap = mapServer.getMap(mapServer.getDefaultMapName());
-		System.out.println(mapServer.getDefaultMapName());
-		legend = (ILegend) serverContext.createObject(Legend.getClsid());
+	public CustomMapLegend(AGSLocalMapResource localResource)throws AutomationException, IOException {
+		super(localResource);
 	}
 
-	public void generateLegendFromLayer() throws AutomationException,
-			IOException {
-		legend.clearItems();
-
-		VerticalLegendItem vLegendItem = (VerticalLegendItem) serverContext.createObject(VerticalLegendItem.getClsid());
-		/*HorizontalLegendItem hLegendItem = (HorizontalLegendItem) serverContext
-				.createObject(HorizontalLegendItem.getClsid());
-		layer = mapServer.getLayer(mapServer.getDefaultMapName(), 2);
-		hLegendItem.setLayerByRef(layer);*/
-		layer = mapServer.getLayer(mapServer.getDefaultMapName(), 3);
-		vLegendItem.setLayerByRef(layer);
-		legend.addItem(vLegendItem);
-		
-		customLegendStyle();
-
-	}
-
-	public void generateLegendFromMap() throws AutomationException, IOException {
-		legend.clearItems();
-		for (int i = 0; i < focusMap.getMapSurroundCount(); i++) {
-			if (focusMap.getMapSurround(i) instanceof com.esri.arcgis.carto.Legend) {
-				legend = (ILegend) focusMap.getMapSurround(i);
-			}
-		}
-		// legend.removeItem(arg0);
-	}
-	
 	public void customLegendStyle() throws AutomationException, IOException{
 		double patchHeight;
-		/*ILegendFormat legendForm = (ILegendFormat) serverContext.createObject(LegendFormat.getClsid());
-		legendForm = legend.getFormat();*/
 		legend.getFormat().setVerticalItemGap(0);
 		legend.getFormat().setHorizontalItemGap(0);
 		legend.getFormat().setShowTitle(false);
-		System.out.println("horizontalPatchGap: " + legend.getFormat().getHorizontalPatchGap());
-		System.out.println(legend.getFormat().getDefaultPatchHeight());
-		System.out.println(legend.getFormat().getDefaultPatchWidth());
 		
 		legend.getFormat().setHorizontalPatchGap(0);
 		legend.getFormat().setVerticalPatchGap(-3);
-		patchHeight = 6;
+		patchHeight = 12;
 		legend.getFormat().setDefaultPatchHeight(patchHeight);
 		legend.getFormat().setDefaultPatchWidth(patchHeight * 2);
 		for(int i = 0; i < legend.getItemCount(); i++){
-			System.out.println(i);
 			legend.getItem(i).setShowLabels(false);
 			legend.getItem(i).setShowDescriptions(false);
 		}
 		
-		System.out.println("horizontalPatchGap: " + legend.getFormat().getHorizontalPatchGap());
-		System.out.println(legend.getFormat().getDefaultPatchHeight());
-		System.out.println(legend.getFormat().getDefaultPatchWidth());
+	}
+	
+	public String printLegendWithUrl() throws AutomationException, IOException{
+		generateLegendFromLayer();
+		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnURL);
+		
+		if(lgdImgRetType == esriImageReturnType.esriImageReturnURL){
+			return imgResult.getURL();
+		}/*else{
+			randomStr = randomString(8);
+			FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
+			fos.write(imgResult.getMimeData());
+			fos.close();
+			return null;
+		}*/
+		return null;
+		
 	}
 
-	public IImageResult printLegend() throws AutomationException, IOException {
+	private IImageResult printLegend(int returnType) throws AutomationException, IOException {
 		IImageType imgType = (IImageType) serverContext.createObject(ImageType
 				.getClsid());
 		imgType.setFormat(esriImageFormat.esriImageJPG);
-		//imgType.setFormat(esriImageReturnType.esriImageReturnURL);
-		imgType.setReturnType(esriImageReturnType.esriImageReturnMimeData);
+		//imgType.setReturnType(esriImageReturnType.esriImageReturnURL);
+		imgType.setReturnType(returnType);
 
 		IImageDisplay imgDisp = (IImageDisplay) serverContext
 				.createObject(ImageDisplay.getClsid());
-		imgDisp.setHeight(300);
-		imgDisp.setWidth(120);
+		imgDisp.setHeight(192);
+		imgDisp.setWidth(70);
 		imgDisp.setDeviceResolution(96);
 
 		IImageDescription imgDesc = (IImageDescription) serverContext
@@ -148,20 +108,12 @@ public class CustomMapLegend {
 		mapDisp.setHeight(200);
 		mapDisp.setWidth(150);
 
-		/*IActiveView activeView = (IActiveView) focusMap;
-		legend.fitToBounds(activeView.getScreenDisplay(), arg1, arg2)
-		*/
 		IMapServerLayout mapSvrLayout = mapServer;
 		IMapDescription mapDesc = mapServer.getServerInfo(
 				mapServer.getDefaultMapName()).getDefaultMapDescription();
 		IImageResult imgResult = mapSvrLayout.exportLegend(legend, mapDesc,
 				mapDisp, null, imgDesc);
-		System.out.println(imgResult.getURL());
-		System.out.println(imgResult.getMimeData());
-		randomStr = randomString(8);
-		FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
-		fos.write(imgResult.getMimeData());
-		fos.close();
+		
 		return imgResult;
 	}
 
@@ -170,92 +122,27 @@ public class CustomMapLegend {
 	 * @throws IOException
 	 */
 	public void createLegend() throws AutomationException, IOException{
-		System.out.println("legend");
 		
 		IGraphicsContainer container = (IGraphicsContainer) focusMap;
 		focusMap.clearMapSurrounds();
 		IElement elem = (IElement) serverContext.createObject(PngPictureElement.getClsid());
+		
 		generateLegendFromLayer();
-		System.out.println(legend.getItemCount());
-		printLegend();
-		//IPageLayout pageLayout = (IPageLayout) focusMap;
-		/*IActiveView activeView = (IActiveView) focusMap;
-		System.out.println("________________________" + activeView.getFocusMap());
-		System.out.println(activeView.getScreenDisplay());
-		
-		IMapSurroundFrame msf = (IMapSurroundFrame)serverContext.createObject(MapSurroundFrame.getClsid());
-		IMapFrame mapFrm = (IMapFrame) serverContext.createObject(MapFrame.getClsid()); // = (MapFrame)
-							// serverContext.createObject(MapFrame.getClsid());
-		//System.out.println(mapFrm.getMap().getName());
-		mapFrm.setMapByRef(focusMap);// = (MapFrame) container.findFrame(focusMap);
-		IUID elementUID = (IUID) serverContext.createObject(UID.getClsid());
-		System.out.println("hbb");
-		elementUID.setValue("{7A3F91E4-B9E3-11d1-8756-0000F8751720}");
-		System.out.println(mapFrm + " " + elementUID);
+		/*System.out.println(legend.getItemCount());
+		printLegend(esriImageReturnType.esriImageReturnMimeData);*/
 
-		// The createsurroundframe method takes the UID of the element and
-		// an optional style.
-		IMapSurroundFrame mapSurroundFrame;
-		mapSurroundFrame = mapFrm.createSurroundFrame(elementUID, null);
-		mapSurroundFrame.getMapSurround().setName("Legend");
-		
-		mapSurroundFrame.setBackground(createSymbolBackground());
-		
-		IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-		env.putCoords(103.5, 31.5, 104.5, 38.5);
-		elem.setGeometry((IGeometry) env);
-		elem = (IElement) mapSurroundFrame;
-		
-		
-		IMapSurround ms = mapSurroundFrame.getMapSurround();
-		ILegend lgd = (ILegend) ms;*/
-		
-		//container.addElement(elem, 0);
-
-		
-		/*for(int i = 0; i < focusMap.getMapSurroundCount(); i++){
-			if(focusMap.getMapSurround(i) instanceof com.esri.arcgis.carto.Legend){
-				legend = (ILegend) focusMap.getMapSurround(i);
-				// focusMap.getMapSurround(i)
-				msf.setMapSurroundByRef(focusMap.getMapSurround(i));
-				System.out.println("aaaaaaaaaaaaaaaaaaaaaaa"+i);
-			}
-		}*/
-		System.out.println(focusMap.getMapSurroundCount());
-		System.out.println(legend.getItemCount());
 		focusMap.addMapSurround(legend);
 		
-		System.out.println(focusMap.getMapSurroundCount());
-		System.out.println(focusMap.getMapSurround(0).getName());
-		//msf.setMapSurroundByRef(focusMap.getMapSurround(0));
-		// elem = (IElement) (IGraphicsComposite)legend;
 		IEnvelopeGEN env1 = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-		env1.putCoords(103.5, 31.5, 104.5, 38.5);
+		env1.putCoords(103.0, 31.5, 104.9, 38.5);
 		elem.setGeometry((IGeometry) env1);
 		
-		//elem = (IElement) msf;
 		
-		//ITrackCancel trackCancel = (ITrackCancel) serverContext.createObject(TrackCancel.getClsid());
-		
-		legend.setName("abc");
-		legend.setTitle("Í¼Àý");
-		
-		/*legend.draw(activeView.getScreenDisplay(), trackCancel, (Envelope) env);
-		focusMap.getMapSurround(0).draw(activeView.getScreenDisplay(), trackCancel, (Envelope) env);
-		msf.setBackground(createSymbolBackground());
-		msf.getMapSurround().draw(activeView.getScreenDisplay(), trackCancel, (Envelope) env);*/
-		System.out.println("aaaa");
-		printLegend();
-		/*focusMap.addMapSurround(mapSurroundFrame.getMapSurround());
-		focusMap.delayDrawing(false);*/
-		
-		/*System.out.println("active:" + focusMap.getActiveGraphicsLayer());
-
-		//ICompositeGraphicsLayer layer = (ICompositeGraphicsLayer) serverContext.createObject(CompositeGraphicsLayer.getClsid());
-		ICompositeGraphicsLayer layer = (ICompositeGraphicsLayer) focusMap.getBasicGraphicsLayer();
-		//IGraphicsLayer graphicLayer = (IGraphicsLayer) serverContext.createObject(CompositeGraphicsLayer.getClsid());
-		IGraphicsLayer graphicLayer = layer.addLayer("New Graphics Layer", null);
-		focusMap.setActiveGraphicsLayerByRef((ILayer)graphicLayer);*/
+		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData);
+		randomStr = randomString(8);
+		FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
+		fos.write(imgResult.getMimeData());
+		fos.close();
 		
 		PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
 		try{
@@ -264,7 +151,7 @@ public class CustomMapLegend {
 			File tmpf = new File("c:\\pic\\feature2\\" + randomStr + ".jpg");
 			tmpf.delete();
 			IEnvelopeGEN env2 = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-			env2.putCoords(103.5, 31.5, 104.5, 37.5);
+			env2.putCoords(103.0, 31.5, 104.9, 37.5);
 			pngPicElem.setGeometry((IGeometry) env2);
 			container.addElement(pngPicElem, 0);
 			//container.addElement(legend.getItem(0).getGraphics().next(), 0);
@@ -302,4 +189,12 @@ public class CustomMapLegend {
         }
         return sb.toString();
     }
+
+	public int getLgdImgRetType() {
+		return lgdImgRetType;
+	}
+
+	public void setLgdImgRetType(int lgdImgRetType) {
+		this.lgdImgRetType = lgdImgRetType;
+	}
 }

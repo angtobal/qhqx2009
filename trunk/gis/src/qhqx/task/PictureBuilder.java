@@ -10,6 +10,7 @@ import java.net.URLConnection;
 import java.rmi.RemoteException;
 
 import qhqx.ags.AgsObjAccess;
+import qhqx.ags.CustomMapLegend;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
@@ -190,7 +191,10 @@ public class PictureBuilder {
 		textElement.setText(pictureHead + "  " +WeatherRenderInfo.getName(featureName));
 		container.addElement(textElement, 0);
 		
-		PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
+		CustomMapLegend mapLegend = new CustomMapLegend(localResource);
+		mapLegend.createLegend();
+		
+		/*PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
 		try{
 			pngPicElem.importPictureFromFile("c:\\pic\\feature\\" + WeatherRenderInfo.getName(this.featureName) + ".jpg");
 			IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
@@ -199,7 +203,7 @@ public class PictureBuilder {
 			container.addElement(pngPicElem, 0);
 		}catch(NullPointerException err){
 			System.out.println("所选要素图例不存在 " + this.featureName);
-		}
+		}*/
 		
 		
 		AgsObjAccess access = new AgsObjAccess(localResource.getLocalMapServer(), localResource.getServerContext());
@@ -237,7 +241,7 @@ public class PictureBuilder {
 		}
 		
 		mapFunc.getLayerDescriptions()[1].setVisible(false);
-		mapFunc.setCurrentExtent(new WebExtent(89.400228, 31.542524, 104.5, 40.339596));
+		mapFunc.setCurrentExtent(new WebExtent(89.400228, 31.542524, 104.9, 40.339596));
 		mapFunc.getLayerInfos()[6].setMinScale(0);
 		
 		FileOutputStream fileOutStream = new FileOutputStream("c:\\sharedata\\" + this.fileName + ".jpg");
