@@ -34,6 +34,8 @@ public class GraphicUpdateContextListener implements ServletContextListener {
 		servletContextEvent.getServletContext().log("Timer is started!");
 		timer.schedule(new GrahpicUpdateTimerTask(servletContextEvent.getServletContext()), 0, 5 * 60 * 1000);
 		//timer.scheduleAtFixedRate(task, firstTime, period);
+		
+		timer.schedule(new TempFileClean(), 30 * 60 * 1000);
 		servletContextEvent.getServletContext().log("Timer task schedule is added!");
 	}
 

@@ -5,10 +5,9 @@ package qhqx.task;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 
 import qhqx.ags.AgsObjAccess;
+import qhqx.ags.CustomMapLegend;
 import qinghai.qixiang.winddirectionandspeed.WindDirectionSpeed;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
@@ -17,7 +16,6 @@ import com.esri.adf.web.ags.data.AGSOverviewFunctionality;
 import com.esri.adf.web.data.GraphicElement;
 import com.esri.adf.web.data.MapFunctionality;
 import com.esri.adf.web.data.OverviewFunctionality;
-import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebOverview;
 import com.esri.adf.web.data.geometry.WebPoint;
 import com.esri.adf.web.data.symbol.WebPictureMarkerSymbol;
@@ -25,14 +23,6 @@ import com.esri.adf.web.data.symbol.WebTrueTypeMarkerSymbol;
 import com.esri.arcgis.carto.IRasterLayer;
 import com.esri.arcgis.carto.MapServer;
 import com.esri.arcgis.interop.AutomationException;
-import com.esri.arcgisws.EsriJobStatus;
-import com.esri.arcgisws.GPDouble;
-import com.esri.arcgisws.GPResult;
-import com.esri.arcgisws.GPResultOptions;
-import com.esri.arcgisws.GPServerBindingStub;
-import com.esri.arcgisws.GPString;
-import com.esri.arcgisws.GPToolInfo;
-import com.esri.arcgisws.GPValue;
 import com.esri.arcgisws.LayerDescription;
 import com.esri.arcgisws.MapDescription;
 import com.esri.arcgisws.MapLayerInfo;
@@ -42,96 +32,21 @@ import com.esri.arcgisws.MapServerInfo;
  * @author yan
  *
  */
-public class RealTimeContour {
-	private String gpEndpoint = null;
+public class RealTimeContour extends GPServerInfo {
+	/**
+	 * 
+	 */
+	private static final String MODEL_NAME = "servertask";
+
 	private String mapEndpoint = null;
-	private WebContext webContext = null;
-	private GPToolInfo toolInfo = null;
-	private GPResult result = null;
-	private GPResultOptions resultOpt = null;
-	private String pid = null;
-	private String base = null;
-	private String interval = null;
-	private String JobID = null;
+	
 	private String localMapResID = null;
 	
 	private String featureName = null;
 	private String picHead = null;
 	
-	@SuppressWarnings("static-access")
-	public void generateContout(WebContext webContext, String modelName) throws MalformedURLException, RemoteException, InterruptedException{
-		GPString queryString = new GPString();
-		queryString.setValue("PID=\'" + pid + "\'");
-		//queryString.setValue("\"F10\"=\'" + pid + "\'");
-		
-		GPDouble baseContour = new GPDouble();
-		baseContour.setValue(Double.parseDouble(base));
-		
-		GPDouble contourInterval = new GPDouble();
-		contourInterval.setValue(Double.parseDouble(interval));
-		
-		GPValue[] gpValues = new GPValue[3];
-		gpValues[0] = contourInterval;
-		gpValues[1] = baseContour;
-		gpValues[2] = queryString;
-		
-		
-		
-		GPServerBindingStub gpServer = new GPServerBindingStub(new java.net.URL(gpEndpoint), null);
-		toolInfo = gpServer.getToolInfo(modelName);
-		resultOpt = new GPResultOptions();
-		resultOpt.setDensifyFeatures(true);
-		
-		JobID = gpServer.submitJob(toolInfo.getName(), gpValues, resultOpt, null);
-		System.out.println(JobID);
-		//Check the status of the job; if it's finished and successful, proceed - false delay.
-		while (gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobSucceeded && gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobFailed){
-		    Thread.currentThread().sleep(3000);
-		    System.out.println(gpServer.getJobStatus(JobID).toString());
-		}
-		
-		if(gpServer.getResultMapServerName() != null){
-			System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
-			//result = gpServer.getJobResult(JobID, null, resultOpt);
-		}
-		
-	}
+	private String lgdurl = null;
 	
-	public void generateContout(String modelName) throws MalformedURLException, RemoteException, InterruptedException{
-		GPString queryString = new GPString();
-		queryString.setValue("PID=\'" + pid + "\'");
-		//queryString.setValue("\"F10\"=\'" + pid + "\'");
-		
-		GPDouble baseContour = new GPDouble();
-		baseContour.setValue(Double.parseDouble(base));
-		
-		GPDouble contourInterval = new GPDouble();
-		contourInterval.setValue(Double.parseDouble(interval));
-		
-		GPValue[] gpValues = new GPValue[3];
-		gpValues[0] = contourInterval;
-		gpValues[1] = baseContour;
-		gpValues[2] = queryString;
-		
-		GPServerBindingStub gpServer = new GPServerBindingStub(new java.net.URL(gpEndpoint), null);
-		toolInfo = gpServer.getToolInfo(modelName);
-		resultOpt = new GPResultOptions();
-		resultOpt.setDensifyFeatures(true);
-		
-		JobID = gpServer.submitJob(toolInfo.getName(), gpValues, resultOpt, null);
-		System.out.println(JobID);
-		//Check the status of the job; if it's finished and successful, proceed - false delay.
-		while (gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobSucceeded && gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobFailed){
-		    Thread.sleep(3000);
-		    System.out.println(gpServer.getJobStatus(JobID).toString());
-		}
-		
-		if(gpServer.getResultMapServerName() != null){
-			System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
-			//result = gpServer.getJobResult(JobID, null, resultOpt);
-		}
-		
-	}
 	
 	public void gpResultDisplay() throws IOException{
 		
@@ -140,12 +55,13 @@ public class RealTimeContour {
 		localMapServer.refreshServerObjects();
 		
 		try {
-			this.generateContout("servertask");
+			this.generateContout(MODEL_NAME);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
 		changeADFLyrSourceByID(localResource);
+		
 	}
 
 	private void changeRasterLyrRender(AGSLocalMapResource localResource) throws AutomationException, IOException{
@@ -158,14 +74,14 @@ public class RealTimeContour {
 		if(this.featureName != null){
 			render.setFeatureName(featureName);
 		}else{
-			render.setFeatureName("shidu");
-			System.out.println("featureName is null");
+			render.setFeatureName("common");
+			System.out.println("featureName is null, common");
 		}
-		//render.setFeatureName("shidu");
 		render.setRasterLayer(rasterLayer);
 		render.renderByRasterClassify(localResource.getServerContext());
 		localMapServer.getMap(mapName).deleteLayer(rasterLayer);
 		rasterLayer = render.rasterLayer;
+		
 		localMapServer.getMap(mapName).addLayer(rasterLayer);
 		localMapServer.getMap(mapName).moveLayer(rasterLayer, 1);
 		
@@ -181,6 +97,7 @@ public class RealTimeContour {
 	
 	private void changeADFLyrSourceByID(AGSLocalMapResource localResource) throws AutomationException, IOException{
 		changeRasterLyrRender(localResource);
+		
 		webContext.getWebGraphics().clearGraphics();
 		
 		//ADF中改变SourceID，改变页面显示图层
@@ -190,7 +107,6 @@ public class RealTimeContour {
 		MapDescription adfMapDescription = adfMapServerInfo.getDefaultMapDescription();
 		LayerDescription[] adfLayerDescriptions = adfMapDescription.getLayerDescriptions();
 		
-		
 		for(int i = 0; i < 4; i++){
 			if(i == 1 || i == 2){
 				adfLayerDescriptions[i].setSourceID(JobID);
@@ -198,14 +114,19 @@ public class RealTimeContour {
 			}
 			//替换图层
 			if(i == 3){
-				
+				System.out.println(JobID);
 				adfLayerDescriptions[i].setSourceID(JobID);
 				adfLayerDescriptions[i].setVisible(true);
 			}
 		}
+		//localResource = (AGSLocalMapResource) webContext.getResourceById(localMapResID);
+		CustomMapLegend mapLgd = new CustomMapLegend(localResource);
+		lgdurl = mapLgd.printLegendWithUrl();
+		
 		mapFunc = (AGSMapFunctionality) localResource.getFunctionality(MapFunctionality.FUNCTIONALITY_NAME);
 		mapFunc.getMapServerInfo().setMapLayerInfos(adfMapLayerInfos);
 		mapFunc.getMapServerInfo().getDefaultMapDescription().setLayerDescriptions(adfLayerDescriptions);
+		mapFunc.getLayerDescriptions()[1].setVisible(false);
 		
 		WebTrueTypeMarkerSymbol label = new WebTrueTypeMarkerSymbol();
 		label.setFontName("宋体");
@@ -219,10 +140,11 @@ public class RealTimeContour {
 		try{
 			WebPictureMarkerSymbol pic = new WebPictureMarkerSymbol();
 			System.out.println(this.featureName);
-			pic.setURL(new java.net.URL("http://localhost:8080/gis/images/" + this.featureName + ".jpg"));
+			//pic.setURL(new java.net.URL("http://localhost:8080/gis/images/" + this.featureName + ".jpg"));
+			pic.setURL(new java.net.URL(lgdurl));
 			GraphicElement picGe = new GraphicElement();
 			//picGe.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX()+1, webContext.getWebMap().getCurrentExtent().getMinY()-1));
-			picGe.setGeometry(new WebPoint(103.5, 35));
+			picGe.setGeometry(new WebPoint(103.9, 35));
 			picGe.setSymbol(pic);
 			webContext.getWebGraphics().addGraphics(picGe);
 		}catch(NullPointerException err){
@@ -248,42 +170,6 @@ public class RealTimeContour {
 		}
 	}
 	
-	public String getEndpoint() {
-		return gpEndpoint;
-	}
-
-	public void setEndpoint(String endpoint) {
-		this.gpEndpoint = endpoint;
-	}
-
-	public GPToolInfo getToolInfo() {
-		return toolInfo;
-	}
-
-	public void setToolInfo(GPToolInfo toolInfo) {
-		this.toolInfo = toolInfo;
-	}
-
-	public GPResult getResult() {
-		return result;
-	}
-
-	public String getPid() {
-		return pid;
-	}
-
-	public void setPid(String pid) {
-		this.pid = pid;
-	}
-
-	public WebContext getWebContext() {
-		return webContext;
-	}
-
-	public void setWebContext(WebContext webContext) {
-		this.webContext = webContext;
-	}
-
 	public String getMapEndpoint() {
 		return mapEndpoint;
 	}
@@ -298,22 +184,6 @@ public class RealTimeContour {
 
 	public void setLocalMapResID(String localMapResID) {
 		this.localMapResID = localMapResID;
-	}
-
-	public String getBase() {
-		return base;
-	}
-
-	public void setBase(String base) {
-		this.base = base;
-	}
-
-	public String getInterval() {
-		return interval;
-	}
-
-	public void setInterval(String interval) {
-		this.interval = interval;
 	}
 
 	public void setFeatureName(String featureName) {

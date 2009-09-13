@@ -106,7 +106,13 @@ public class CustomRasterRender {
 	//分级渲染raster
 	public void renderByRasterClassify(IServerContext serverContext) throws AutomationException, IOException{
 		System.out.println(featureName.toString());
-		int numOfClass = WeatherRenderInfo.getBreak(featureName.toString()).length;
+		int numOfClass;//
+		if(featureName.equals("common")){
+			numOfClass = 8;
+		}else{
+			numOfClass = WeatherRenderInfo.getBreak(featureName.toString()).length;
+		}
+		
 		
 		//得到图层，创建分级渲染器
 		raster = rasterLayer.getRaster();
@@ -132,22 +138,49 @@ public class CustomRasterRender {
 		//遍历分级并应用颜色和标签
 		
 		//int[] a = {0x0000FF,0x00FF00,0xFFFF00,0xFFFFFF,0x00FFFF,0xFF0000,0x000000};
-		for(int i = 0; i < classifyRenderer.getClassCount() - 1; i++){
-			//fillSymbol.setColor((IColor)ramp.getColor(i));
-			//color.setRGB(0xFF0000);
-			//color.setRGB(a[i]);
-			color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-			color.setTransparency((byte)50);
-			fillSymbol.setColor(color);
-			classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
-			classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
-			classifyRenderer.setLabel(i, " <" + classifyRenderer.getBreak(i));
-			//color = null;
+		if(featureName.equals("common")){
+			RenderBreaker rb = new RenderBreaker();
+			rb.setMax(100);
+			rb.setMin(0);
+			rb.setNumOfClass(numOfClass);
+			double[] tmpBreak = rb.createRenderBreak();
+			System.out.println(numOfClass);
+			
+			int rgbSelectInterval = 0;
+			rgbSelectInterval = WeatherRenderInfo.getRGB("common").length / numOfClass;
+			for(int i = 0; i < classifyRenderer.getClassCount() ; i++){
+				System.out.println(tmpBreak[i]);
+				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i * rgbSelectInterval]);
+				color.setTransparency((byte)50);
+				fillSymbol.setColor(color);
+				classifyRenderer.setBreak(i, tmpBreak[i]);
+				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+				classifyRenderer.setLabel(i, " <" + (double)((int)(classifyRenderer.getBreak(i)*10))/10);
+			}
+		}else{
+			for(int i = 0; i < classifyRenderer.getClassCount() - 1; i++){
+				//fillSymbol.setColor((IColor)ramp.getColor(i));
+				//color.setRGB(0xFF0000);
+				//color.setRGB(a[i]);
+				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
+				color.setTransparency((byte)50);
+				fillSymbol.setColor(color);
+				classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
+				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+				classifyRenderer.setLabel(i, " <" + classifyRenderer.getBreak(i));
+				//color = null;
+				classifyRenderer.setLabel(classifyRenderer.getClassCount()-1, " 其他");
+			}
 		}
+		
+		
+		
+		System.out.println("render");
 		
 		//刷新渲染器并插入到图层
 		rasterRenderer.update();
 		rasterLayer.setRendererByRef((IRasterRenderer) classifyRenderer);
+		
 		//rasterLayer.draw(esriDrawPhase.esriDPGeography, arg1, null);
 	}
 	
