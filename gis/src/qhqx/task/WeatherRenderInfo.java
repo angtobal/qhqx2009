@@ -159,7 +159,7 @@ public class WeatherRenderInfo {
 		}
 	}
 
-	static public String getName(String featureName) {
+	static public String getChName(String featureName) {
 		if (featureName.equals("wendu")
 				|| featureName.equalsIgnoreCase("V12003")) {
 			return new String("温度");
@@ -180,7 +180,31 @@ public class WeatherRenderInfo {
 			return new String("风向风速");
 		} else {
 			// return new String(featureName.toString());
-			return new String("要素");
+			return new String("common");
+		}
+	}
+	static public String getEnName(String featureName) {
+		if (featureName.equals("wendu")
+				|| featureName.equalsIgnoreCase("V12003")) {
+			return new String("wendu");
+		} else if (featureName.equals("shidu")
+				|| featureName.equalsIgnoreCase("V13003")) {
+			return new String("shidu");
+		} else if (featureName.equals("qiya")
+				|| featureName.equalsIgnoreCase("V13004")) {
+			return new String("qiya");
+		} else if (featureName.equals("jiangshui")
+				|| featureName.equalsIgnoreCase("V13023")) {
+			return new String("jiangshui");
+		} else if (featureName.equals("fengsu")
+				|| featureName.equalsIgnoreCase("V11302")) {
+			return new String("fengsu");
+		} else if (featureName.equals("fengxiang")
+				|| featureName.equalsIgnoreCase("V11301")) {
+			return new String("fengxiang");
+		} else {
+			// return new String(featureName.toString());
+			return new String("common");
 		}
 
 	}

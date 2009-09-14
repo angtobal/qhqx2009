@@ -131,7 +131,7 @@ public class RealTimeContour extends GPServerInfo {
 		
 		WebTrueTypeMarkerSymbol label = new WebTrueTypeMarkerSymbol();
 		label.setFontName("ËÎÌו");
-		label.addTextValue(this.picHead + " " + WeatherRenderInfo.getName(featureName));
+		label.addTextValue(this.picHead + " " + WeatherRenderInfo.getChName(featureName));
 		GraphicElement ge = new GraphicElement();
 		//ge.setGeometry(new WebPoint(webContext.getWebMap().getCurrentExtent().getMinX() + 1, webContext.getWebMap().getCurrentExtent().getMaxY() - 1));
 		ge.setGeometry(new WebPoint(96, 40));

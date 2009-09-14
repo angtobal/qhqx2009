@@ -108,12 +108,15 @@ public class CustomRasterRender {
 	
 	//分级渲染raster
 	public void renderByRasterClassify(IServerContext serverContext) throws AutomationException, IOException{
-		System.out.println(featureName.toString());
+		System.out.println(WeatherRenderInfo.getEnName(featureName));
 		int numOfClass;//
-		if(featureName.equals("common")){
+		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
 			numOfClass = 8;
 		}else{
-			numOfClass = WeatherRenderInfo.getBreak(featureName.toString()).length;
+			numOfClass = WeatherRenderInfo.getBreak(WeatherRenderInfo.getEnName(featureName)).length;
+			if(numOfClass == 0){
+				return;
+			}
 		}
 		
 		
@@ -141,7 +144,7 @@ public class CustomRasterRender {
 		//遍历分级并应用颜色和标签
 		
 		//int[] a = {0x0000FF,0x00FF00,0xFFFF00,0xFFFFFF,0x00FFFF,0xFF0000,0x000000};
-		if(featureName.equals("common")){
+		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
 			MaxMinValue maxmin = new MaxMinValue();
 			maxmin.setPid(pid);
 			double[] temp = maxmin.selectMaxMinValue();
