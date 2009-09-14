@@ -14,18 +14,15 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
-import qhqx.ags.CustomMapLegend;
 import qhqx.task.PictureBuilder;
 import qhqx.task.RealTimeContour;
 
-import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
 import com.esri.adf.web.data.WebToc;
 import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.adf.web.faces.event.TaskEvent;
 import com.esri.adf.web.util.WebUtil;
-import com.esri.arcgis.interop.AutomationException;
 
 /**
  * @author yan
