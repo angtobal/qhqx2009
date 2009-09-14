@@ -71,6 +71,7 @@ public class RealTimeContour extends GPServerInfo {
 		
 		IRasterLayer rasterLayer = (IRasterLayer) localMapServer.getLayer(mapName, 3);
 		CustomRasterRender render = new CustomRasterRender();
+		render.setPid(pid);
 		if(this.featureName != null){
 			render.setFeatureName(featureName);
 		}else{

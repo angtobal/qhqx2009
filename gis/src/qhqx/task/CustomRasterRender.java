@@ -9,6 +9,8 @@ package qhqx.task;
 
 import java.io.IOException;
 
+import qhqx.db.MaxMinValue;
+
 import com.esri.arcgis.carto.IRasterClassifyColorRampRenderer;
 import com.esri.arcgis.carto.IRasterLayer;
 import com.esri.arcgis.carto.IRasterRGBRenderer;
@@ -48,6 +50,7 @@ public class CustomRasterRender {
 	protected IRasterLayer rasterLayer = null;
 	
 	protected String featureName;
+	private String pid;
 	
 	//stretch—’…´∆¬∂»‰÷»æraster
 	public void renderByRasterStretchColorRamp() throws AutomationException, IOException{
@@ -139,18 +142,23 @@ public class CustomRasterRender {
 		
 		//int[] a = {0x0000FF,0x00FF00,0xFFFF00,0xFFFFFF,0x00FFFF,0xFF0000,0x000000};
 		if(featureName.equals("common")){
+			MaxMinValue maxmin = new MaxMinValue();
+			maxmin.setPid(pid);
+			double[] temp = maxmin.selectMaxMinValue();
 			RenderBreaker rb = new RenderBreaker();
-			rb.setMax(100);
-			rb.setMin(0);
+			rb.setMax(temp[0]);
+			rb.setMin(temp[1]);
 			rb.setNumOfClass(numOfClass);
 			double[] tmpBreak = rb.createRenderBreak();
 			System.out.println(numOfClass);
 			
-			int rgbSelectInterval = 0;
-			rgbSelectInterval = WeatherRenderInfo.getRGB("common").length / numOfClass;
+			double rgbSelectInterval = 0;
+			int numOfColor = WeatherRenderInfo.getRGB("common").length;
+			rgbSelectInterval = numOfColor / numOfClass;
 			for(int i = 0; i < classifyRenderer.getClassCount() ; i++){
 				System.out.println(tmpBreak[i]);
-				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i * rgbSelectInterval]);
+				color.setRGB(WeatherRenderInfo.getRGB(featureName)[Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1))]);
+				System.out.println("colorIndex: " + Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1)));
 				color.setTransparency((byte)50);
 				fillSymbol.setColor(color);
 				classifyRenderer.setBreak(i, tmpBreak[i]);
@@ -256,5 +264,13 @@ public class CustomRasterRender {
 
 	public void setFeatureName(String featureName) {
 		this.featureName = featureName;
+	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 }
