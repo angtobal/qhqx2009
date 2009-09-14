@@ -24,7 +24,10 @@ public class RenderBreaker {
 			commonBreak[i] = min + count;
 			count += intervalRange;
 		}
-		commonBreak[numOfClass -1] = max;
+		if(numOfClass > 1){
+			commonBreak[numOfClass -1] = max;
+		}
+		
 		return commonBreak;
 		
 	}
