@@ -8,10 +8,10 @@ package qhqx.task;
  *
  */
 public class RenderBreaker {
-	private float max;
-	private float min;
+	private double max;
+	private double min;
 	private int numOfClass;
-	private float intervalRange;
+	private double intervalRange;
 	
 	//增加构造函数，从数据库获得。。
 	
@@ -29,16 +29,16 @@ public class RenderBreaker {
 		
 	}
 	
-	public float getMax() {
+	public double getMax() {
 		return max;
 	}
-	public void setMax(float max) {
+	public void setMax(double max) {
 		this.max = max;
 	}
-	public float getMin() {
+	public double getMin() {
 		return min;
 	}
-	public void setMin(float min) {
+	public void setMin(double min) {
 		this.min = min;
 	}
 	public int getNumOfClass() {
@@ -47,7 +47,7 @@ public class RenderBreaker {
 	public void setNumOfClass(int numOfClass) {
 		this.numOfClass = numOfClass;
 	}
-	public float getIntervalRange() {
+	public double getIntervalRange() {
 		intervalRange = (max - min)/numOfClass;
 		return intervalRange;
 	}
