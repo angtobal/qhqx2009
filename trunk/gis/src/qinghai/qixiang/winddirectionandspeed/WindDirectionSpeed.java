@@ -14,7 +14,6 @@ import java.util.Map;
 
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
-import javax.faces.event.PhaseListener;
 
 import qinghai.qixiang.winddirectionandspeed.selectspeedpic.SelectSpeedPic;
 
@@ -171,7 +170,8 @@ public class WindDirectionSpeed  {
 
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
-			String url = "jdbc:oracle:thin:@222.18.139.70:1521:sjy";
+			//String url = "jdbc:oracle:thin:@10.181.22.41:1521:sjy";
+			String url = "jdbc:oracle:thin:@10.181.22.41:1521:sjyrdb";
 			conn = DriverManager.getConnection(url, "gx", "gx");
 
 			stmt = conn.createStatement();
