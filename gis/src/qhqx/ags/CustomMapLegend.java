@@ -69,7 +69,7 @@ public class CustomMapLegend extends LegendInfo {
 	
 	public String printLegendWithUrl() throws AutomationException, IOException{
 		generateLegendFromLayer();
-		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnURL);
+		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnURL, 400, 60);
 		
 		if(lgdImgRetType == esriImageReturnType.esriImageReturnURL){
 			return imgResult.getURL();
@@ -84,7 +84,7 @@ public class CustomMapLegend extends LegendInfo {
 		
 	}
 
-	private IImageResult printLegend(int returnType) throws AutomationException, IOException {
+	private IImageResult printLegend(int returnType, int height, int width) throws AutomationException, IOException {
 		IImageType imgType = (IImageType) serverContext.createObject(ImageType
 				.getClsid());
 		imgType.setFormat(esriImageFormat.esriImageJPG);
@@ -93,8 +93,10 @@ public class CustomMapLegend extends LegendInfo {
 
 		IImageDisplay imgDisp = (IImageDisplay) serverContext
 				.createObject(ImageDisplay.getClsid());
-		imgDisp.setHeight(192);
-		imgDisp.setWidth(70);
+		//imgDisp.setHeight(192);
+		//imgDisp.setWidth(70);
+		imgDisp.setHeight(height);
+		imgDisp.setWidth(width);
 		imgDisp.setDeviceResolution(96);
 
 		IImageDescription imgDesc = (IImageDescription) serverContext
@@ -138,7 +140,7 @@ public class CustomMapLegend extends LegendInfo {
 		elem.setGeometry((IGeometry) env1);
 		
 		
-		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData);
+		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData, 300, 70);
 		randomStr = randomString(8);
 		FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
 		fos.write(imgResult.getMimeData());

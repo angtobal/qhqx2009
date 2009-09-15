@@ -17,7 +17,7 @@ public class TempFileClean extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		deleteDir("c:\\pic\\feature2");
+		deleteDir("c:\\pic\\feature2\\");
 
 	}
 	public void deleteDir(String dirPath){
@@ -30,12 +30,12 @@ public class TempFileClean extends TimerTask {
 		for(int i = 0; i < files.length; i++){
 			if(files[i].isDirectory()){
 				deleteDir(files[i].getAbsolutePath());
-				//files[i].delete();
+				files[i].delete();
 			}else{
 				files[i].delete();
 			}
 		}
-		dir.delete();
+		//dir.delete();
 	}
 
 }

@@ -180,7 +180,7 @@ public class WeatherRenderInfo {
 			return new String("风向风速");
 		} else {
 			// return new String(featureName.toString());
-			return new String("common");
+			return new String(" ");
 		}
 	}
 	static public String getEnName(String featureName) {

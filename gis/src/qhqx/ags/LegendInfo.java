@@ -59,7 +59,6 @@ public class LegendInfo {
 				
 				legend.setName("legend");
 				legend.setTitle("Í¼Àý");
-				
 				//customLegendStyle();
 			
 			}

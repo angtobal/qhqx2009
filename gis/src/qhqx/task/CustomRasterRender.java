@@ -9,10 +9,7 @@ package qhqx.task;
 
 import java.io.IOException;
 
-import qhqx.db.MaxMinValue;
-
 import com.esri.arcgis.carto.IRasterClassifyColorRampRenderer;
-import com.esri.arcgis.carto.IRasterLayer;
 import com.esri.arcgis.carto.IRasterRGBRenderer;
 import com.esri.arcgis.carto.IRasterRenderer;
 import com.esri.arcgis.carto.IRasterStretchColorRampRenderer;
@@ -33,7 +30,6 @@ import com.esri.arcgis.display.ISymbol;
 import com.esri.arcgis.display.RandomColorRamp;
 import com.esri.arcgis.display.RgbColor;
 import com.esri.arcgis.display.SimpleFillSymbol;
-import com.esri.arcgis.geodatabase.IRaster;
 import com.esri.arcgis.geodatabase.IRow;
 import com.esri.arcgis.geodatabase.ITable;
 import com.esri.arcgis.interop.AutomationException;
@@ -43,14 +39,9 @@ import com.esri.arcgis.server.IServerContext;
  * @author Administrator
  *
  */
-public class CustomRasterRender {
-	protected IRaster raster = null;
-	protected IRasterRenderer rasterRenderer = null;
-	protected IColor color = null;
-	protected IRasterLayer rasterLayer = null;
-	
-	protected String featureName;
+public class CustomRasterRender extends RasterRenderInfo {
 	private String pid;
+	private int numOfClass;
 	
 	//stretch颜色坡度渲染raster
 	public void renderByRasterStretchColorRamp() throws AutomationException, IOException{
@@ -109,15 +100,7 @@ public class CustomRasterRender {
 	//分级渲染raster
 	public void renderByRasterClassify(IServerContext serverContext) throws AutomationException, IOException{
 		System.out.println(WeatherRenderInfo.getEnName(featureName));
-		int numOfClass;//
-		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
-			numOfClass = 8;
-		}else{
-			numOfClass = WeatherRenderInfo.getBreak(WeatherRenderInfo.getEnName(featureName)).length;
-			if(numOfClass == 0){
-				return;
-			}
-		}
+		countNumOfClass();
 		
 		
 		//得到图层，创建分级渲染器
@@ -145,15 +128,10 @@ public class CustomRasterRender {
 		
 		//int[] a = {0x0000FF,0x00FF00,0xFFFF00,0xFFFFFF,0x00FFFF,0xFF0000,0x000000};
 		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
-			MaxMinValue maxmin = new MaxMinValue();
-			maxmin.setPid(pid);
-			double[] temp = maxmin.selectMaxMinValue();
-			RenderBreaker rb = new RenderBreaker();
-			rb.setMax(temp[0]);
-			rb.setMin(temp[1]);
-			rb.setNumOfClass(numOfClass);
+			
+			RenderBreaker rb = new RenderBreaker(pid);
 			double[] tmpBreak = rb.createRenderBreak();
-			System.out.println(numOfClass);
+			numOfClass = rb.getNumOfClass();
 			
 			double rgbSelectInterval = 0;
 			int numOfColor = WeatherRenderInfo.getRGB("common").length;
@@ -252,21 +230,19 @@ public class CustomRasterRender {
 		rasterRenderer.update();
 		rasterLayer.setRendererByRef((IRasterRenderer) uvRenderer);
 	}
-
-	public IRasterLayer getRasterLayer() {
-		return rasterLayer;
-	}
-
-	public void setRasterLayer(IRasterLayer rasterLayer) {
-		this.rasterLayer = rasterLayer;
-	}
-
-	public String getFeatureName() {
-		return featureName;
-	}
-
-	public void setFeatureName(String featureName) {
-		this.featureName = featureName;
+	
+	private int countNumOfClass(){
+		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
+			/*if(){
+				
+			}else{*/
+				numOfClass = 32;
+			/*}*/
+			
+		}else{
+			numOfClass = WeatherRenderInfo.getBreak(WeatherRenderInfo.getEnName(featureName)).length;
+		}
+		return 0;	
 	}
 
 	public String getPid() {
