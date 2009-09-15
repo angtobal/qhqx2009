@@ -73,7 +73,7 @@ public class GPServerInfo {
 				}
 				
 				if(gpServer.getResultMapServerName() != null){
-					System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
+					//System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
 					//result = gpServer.getJobResult(JobID, null, resultOpt);
 				}
 				
@@ -110,7 +110,7 @@ public class GPServerInfo {
 				}
 				
 				if(gpServer.getResultMapServerName() != null){
-					System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
+					//System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
 					//result = gpServer.getJobResult(JobID, null, resultOpt);
 				}
 				

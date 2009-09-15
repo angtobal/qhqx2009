@@ -61,7 +61,7 @@ public class RealTimeContour extends GPServerInfo {
 		}
 		
 		changeADFLyrSourceByID(localResource);
-		
+		localResource.getServerContext().releaseContext();
 	}
 
 	private void changeRasterLyrRender(AGSLocalMapResource localResource) throws AutomationException, IOException{
@@ -94,6 +94,7 @@ public class RealTimeContour extends GPServerInfo {
 		mapFunc.getMapServerInfo().getMapLayerInfos()[0].setSubLayerIDs(new int[]{1, 2, 3});
 		mapFunc.getMapServerInfo().getMapLayerInfos()[3].setParentLayerID(1);
 		mapFunc.getMapServerInfo().getMapLayerInfos()[0].setName("¶¯Ì¬Í¼²ã");
+		
 	}
 	
 	private void changeADFLyrSourceByID(AGSLocalMapResource localResource) throws AutomationException, IOException{
@@ -169,6 +170,7 @@ public class RealTimeContour extends GPServerInfo {
 			of.initFunctionality(localResource);
 			webOv.exportImage();
 		}
+		
 	}
 	
 	public String getMapEndpoint() {
