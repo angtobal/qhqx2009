@@ -23,23 +23,28 @@ public class MapToolsTaskInfo extends com.esri.adf.web.tasks.MapToolsTaskInfo {
 
   private static final String MAP_VIEWER_IDENTIFY_CLIENT_ACTION = "MapViewerIdentifyMapPoint";
 
-  static {
+  /*static {
     ClientActionArgs.addClientActionArgs(MAP_VIEWER_IDENTIFY_CLIENT_ACTION, PointArgs.class.getName());
-  }
+  }*/
 
   public MapToolsTaskInfo() {
     TaskToolDescriptor panTool = (TaskToolDescriptor) TaskUtils.getToolDescriptor("pan", this);
     panTool.setClientAction("EsriMapContinuousPan");
     
-    TaskToolDescriptor identifyTool = (TaskToolDescriptor) TaskUtils.getToolDescriptor("identify", this);
-    identifyTool.setClientAction(MAP_VIEWER_IDENTIFY_CLIENT_ACTION);
-    identifyTool.setDisabled(true);
+    /*TaskToolDescriptor zoomIn = (TaskToolDescriptor) TaskUtils.getToolDescriptor("zoomIn", this);
+    panTool.setClientAction("EsriMapRectangle");
+    
+    TaskToolDescriptor zoomOut = (TaskToolDescriptor) TaskUtils.getToolDescriptor("zoomOut", this);
+    panTool.setClientAction("EsriMapRectangle");
+    */
+    /*TaskToolDescriptor identifyTool = (TaskToolDescriptor) TaskUtils.getToolDescriptor("identify", this);
+    //identifyTool.setClientAction(MAP_VIEWER_IDENTIFY_CLIENT_ACTION);
+    //identifyTool.setDisabled(true);
     identifyTool.setHidden(true);
     
     TaskToolDescriptor measureTool = (TaskToolDescriptor) TaskUtils.getToolDescriptor("measure", this);
-    System.out.println(measureTool.getName() + ":" + measureTool.getClientAction());
-    measureTool.setDisabled(true);
-    measureTool.setHidden(true);
+    //measureTool.setDisabled(true);
+    measureTool.setHidden(true);*/
     
     /*MapToolsTaskConfig toolConfig = new MapToolsTaskConfig();
     toolConfig.setTools(MapToolsTask.TOOL_ZOOMIN + "," +MapToolsTask.TOOL_ZOOMOUT + "," + MapToolsTask.TOOL_PAN + "," + MapToolsTask.TOOL_PREEXTENT + "," + MapToolsTask.TOOL_NEXTEXTENT + "," + MapToolsTask.TOOL_FULLEXT);

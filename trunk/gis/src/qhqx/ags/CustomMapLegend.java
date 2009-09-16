@@ -49,15 +49,14 @@ public class CustomMapLegend extends LegendInfo {
 		super(localResource);
 	}
 
-	public void customLegendStyle() throws AutomationException, IOException{
-		double patchHeight;
+	public void customLegendStyle(double patchHeight) throws AutomationException, IOException{
 		legend.getFormat().setVerticalItemGap(0);
 		legend.getFormat().setHorizontalItemGap(0);
 		legend.getFormat().setShowTitle(false);
 		
 		legend.getFormat().setHorizontalPatchGap(0);
 		legend.getFormat().setVerticalPatchGap(-3);
-		patchHeight = 12;
+		//patchHeight = 12;
 		legend.getFormat().setDefaultPatchHeight(patchHeight);
 		legend.getFormat().setDefaultPatchWidth(patchHeight * 2);
 		for(int i = 0; i < legend.getItemCount(); i++){
@@ -69,6 +68,7 @@ public class CustomMapLegend extends LegendInfo {
 	
 	public String printLegendWithUrl() throws AutomationException, IOException{
 		generateLegendFromLayer();
+		customLegendStyle(12);
 		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnURL, 400, 60);
 		
 		if(lgdImgRetType == esriImageReturnType.esriImageReturnURL){
@@ -130,6 +130,7 @@ public class CustomMapLegend extends LegendInfo {
 		IElement elem = (IElement) serverContext.createObject(PngPictureElement.getClsid());
 		
 		generateLegendFromLayer();
+		customLegendStyle(9);
 		/*System.out.println(legend.getItemCount());
 		printLegend(esriImageReturnType.esriImageReturnMimeData);*/
 
@@ -140,7 +141,7 @@ public class CustomMapLegend extends LegendInfo {
 		elem.setGeometry((IGeometry) env1);
 		
 		
-		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData, 300, 70);
+		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData, 250, 70);
 		randomStr = randomString(8);
 		FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
 		fos.write(imgResult.getMimeData());
@@ -153,7 +154,7 @@ public class CustomMapLegend extends LegendInfo {
 			File tmpf = new File("c:\\pic\\feature2\\" + randomStr + ".jpg");
 			tmpf.delete();
 			IEnvelopeGEN env2 = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-			env2.putCoords(103.0, 31.5, 104.9, 37.5);
+			env2.putCoords(103.0, 31.5, 104.9, 39.5);
 			pngPicElem.setGeometry((IGeometry) env2);
 			container.addElement(pngPicElem, 0);
 			//container.addElement(legend.getItem(0).getGraphics().next(), 0);

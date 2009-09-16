@@ -94,6 +94,9 @@ public class MaxMinValue {
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		}catch(NullPointerException e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		try {
 			while(gisData.next()){
