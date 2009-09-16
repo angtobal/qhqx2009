@@ -168,14 +168,14 @@ public class PictureBuilder extends GPServerInfo{
 		mapFunc.getLayerDescriptions()[1].setVisible(true);
 		container.deleteAllElements();
 		
-		try{
+		/*try{
 			java.net.URL url = new java.net.URL("http://222.18.139.70:8080/GisStutsPic_auto_SavePic.action?FILENAME=" + this.fileName + ".JPG");
 			@SuppressWarnings("unused")
 			URLConnection urlConn = url.openConnection();
 			//urlConn.connect();
 		}catch(Exception err){
 			System.out.println(err.getMessage());
-		}
+		}*/
 		
 	}
 	

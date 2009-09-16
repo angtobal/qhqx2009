@@ -24,13 +24,14 @@ public class TempFileClean extends TimerTask {
 		System.out.println("É¾³ıÁÙÊ±ÎÄ¼ş...");
 		File dir = new File(dirPath);
 		if(!dir.isDirectory()){
+			System.out.println(dir.getName());
 			return;
 		}
 		File[] files = dir.listFiles();
 		for(int i = 0; i < files.length; i++){
 			if(files[i].isDirectory()){
 				deleteDir(files[i].getAbsolutePath());
-				files[i].delete();
+				//files[i].delete();
 			}else{
 				files[i].delete();
 			}
