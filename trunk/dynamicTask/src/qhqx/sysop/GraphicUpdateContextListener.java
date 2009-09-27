@@ -21,7 +21,6 @@ public class GraphicUpdateContextListener implements ServletContextListener {
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
 	 */
-	@Override
 	public void contextDestroyed(ServletContextEvent ServletContextEvent) {
 		timer.cancel();
 		ServletContextEvent.getServletContext().log("timer is canceled");
@@ -30,12 +29,13 @@ public class GraphicUpdateContextListener implements ServletContextListener {
 	/* (non-Javadoc)
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
-	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		timer = new Timer(true);
 		servletContextEvent.getServletContext().log("Timer is started!");
 		timer.schedule(new GrahpicUpdateTimerTask(servletContextEvent.getServletContext()), 0, 5 * 60 * 1000);
 		//timer.scheduleAtFixedRate(task, firstTime, period);
+		
+		timer.schedule(new TempFileClean(), 30 * 60 * 1000);
 		servletContextEvent.getServletContext().log("Timer task schedule is added!");
 	}
 

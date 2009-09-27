@@ -5,10 +5,10 @@ package qhqx.task;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
+import java.net.URLConnection;
 
 import qhqx.ags.AgsObjAccess;
+import qhqx.ags.CustomMapLegend;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
@@ -17,28 +17,17 @@ import com.esri.adf.web.data.MapFunctionality;
 import com.esri.adf.web.data.OverviewFunctionality;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebOverview;
+import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.arcgis.carto.IGraphicsContainer;
 import com.esri.arcgis.carto.IMap;
 import com.esri.arcgis.carto.IRasterLayer;
 import com.esri.arcgis.carto.MapServer;
-import com.esri.arcgis.carto.PngPictureElement;
 import com.esri.arcgis.carto.TextElement;
-import com.esri.arcgis.geometry.Envelope;
-import com.esri.arcgis.geometry.IEnvelopeGEN;
-import com.esri.arcgis.geometry.IGeometry;
 import com.esri.arcgis.geometry.Point;
 import com.esri.arcgis.interop.AutomationException;
 import com.esri.arcgis.server.IServerContext;
 import com.esri.arcgisws.EsriImageFormat;
 import com.esri.arcgisws.EsriImageReturnType;
-import com.esri.arcgisws.EsriJobStatus;
-import com.esri.arcgisws.GPDouble;
-import com.esri.arcgisws.GPResult;
-import com.esri.arcgisws.GPResultOptions;
-import com.esri.arcgisws.GPServerBindingStub;
-import com.esri.arcgisws.GPString;
-import com.esri.arcgisws.GPToolInfo;
-import com.esri.arcgisws.GPValue;
 import com.esri.arcgisws.ImageDescription;
 import com.esri.arcgisws.ImageDisplay;
 import com.esri.arcgisws.MapImage;
@@ -47,87 +36,19 @@ import com.esri.arcgisws.MapImage;
  * @author yan
  *
  */
-public class PictureBuilder {
-	private String gpEndpoint = null;
+public class PictureBuilder extends GPServerInfo{
+	
+	private static final String MODEL_NAME = "servertask";
+
 	private String mapEndpoint = null;
-	private WebContext webContext = null;
-	private GPToolInfo toolInfo = null;
-	private GPResult result = null;
-	private GPResultOptions resultOpt = null;
-	private String pid = null;
-	private String base = null;
-	private String interval = null;
-	private String JobID = null;
+	
 	private String localMapResID = null;
+	
 	private String featureName = null;
+	
 	private String fileName = null;
 	private String pictureHead;
 	
-	@SuppressWarnings("static-access")
-	public void generateContout(WebContext webContext, String modelName) throws MalformedURLException, RemoteException, InterruptedException{
-		GPString queryString = new GPString();
-		queryString.setValue("PID=\'" + pid + "\'");
-		
-		GPDouble baseContour = new GPDouble();
-		baseContour.setValue(Double.parseDouble(base));
-		
-		GPDouble contourInterval = new GPDouble();
-		contourInterval.setValue(Double.parseDouble(interval));
-		
-		GPValue[] gpValues = new GPValue[3];
-		gpValues[0] = contourInterval;
-		gpValues[1] = baseContour;
-		gpValues[2] = queryString;
-		
-		
-		
-		GPServerBindingStub gpServer = new GPServerBindingStub(new java.net.URL(gpEndpoint), null);
-		toolInfo = gpServer.getToolInfo(modelName);
-		resultOpt = new GPResultOptions();
-		resultOpt.setDensifyFeatures(true);
-		
-		JobID = gpServer.submitJob(toolInfo.getName(), gpValues, resultOpt, null);
-		System.out.println(JobID);
-		while (gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobSucceeded && gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobFailed){
-		    Thread.currentThread().sleep(3000);
-		    System.out.println(gpServer.getJobStatus(JobID).toString());
-		}
-		
-		if(gpServer.getResultMapServerName() != null){
-			System.out.println(gpServer.getResultMapServerName().toString() + "aaa");
-		}
-		
-	}
-	
-	public void generateContout(String modelName) throws MalformedURLException, RemoteException, InterruptedException{
-		GPString queryString = new GPString();
-		queryString.setValue("PID=\'" + pid + "\'");
-		
-		GPDouble baseContour = new GPDouble();
-		baseContour.setValue(Double.parseDouble(base));
-		
-		GPDouble contourInterval = new GPDouble();
-		contourInterval.setValue(Double.parseDouble(interval));
-		
-		GPValue[] gpValues = new GPValue[3];
-		gpValues[0] = contourInterval;
-		gpValues[1] = baseContour;
-		gpValues[2] = queryString;
-		
-		
-		
-		GPServerBindingStub gpServer = new GPServerBindingStub(new java.net.URL(gpEndpoint), null);
-		toolInfo = gpServer.getToolInfo(modelName);
-		resultOpt = new GPResultOptions();
-		resultOpt.setDensifyFeatures(true);
-		
-		JobID = gpServer.submitJob(toolInfo.getName(), gpValues, resultOpt, null);
-		System.out.println(JobID);
-		while (gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobSucceeded && gpServer.getJobStatus(JobID) != EsriJobStatus.esriJobFailed){
-		    Thread.sleep(3000);
-		    System.out.println(gpServer.getJobStatus(JobID).toString() + this.getFileName());
-		}
-	}
 	
 	public void gpResultDisplay() throws IOException{
 		
@@ -136,9 +57,10 @@ public class PictureBuilder {
 		localMapServer.refreshServerObjects();
 		
 		try {
-			this.generateContout("servertask");
+			this.generateContout(MODEL_NAME);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			return;
 		}
 		
 		changeADFLyrSourceByID(localResource);
@@ -153,10 +75,11 @@ public class PictureBuilder {
 		
 		IRasterLayer rasterLayer = (IRasterLayer) localMapServer.getLayer(mapName, 3);
 		CustomRasterRender render = new CustomRasterRender();
+		render.setPid(pid);
 		if(this.featureName != null){
 			render.setFeatureName(featureName);
 		}else{
-			render.setFeatureName("shidu");
+			render.setFeatureName("common");
 			System.out.println("featureName is null");
 		}
 		render.setRasterLayer(rasterLayer);
@@ -179,15 +102,23 @@ public class PictureBuilder {
 		point.setY(40);
 		textElement.setGeometry(point);
 		textElement.setFontName("宋体");
-		textElement.setText(pictureHead);
+		textElement.setText(pictureHead + "  " +WeatherRenderInfo.getChName(featureName));
 		container.addElement(textElement, 0);
 		
-		PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
-		pngPicElem.importPictureFromFile("c:\\pic\\legend.jpg");
-		IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
-		env.putCoords(90, 31, 92.5, 33.5);
-		pngPicElem.setGeometry((IGeometry) env);
-		container.addElement(pngPicElem, 1);
+		CustomMapLegend mapLegend = new CustomMapLegend(localResource);
+		mapLegend.createLegend();
+		
+		/*PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
+		try{
+			pngPicElem.importPictureFromFile("c:\\pic\\feature\\" + WeatherRenderInfo.getName(this.featureName) + ".jpg");
+			IEnvelopeGEN env = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
+			env.putCoords(103.5, 31.5, 104.5, 38.5);
+			pngPicElem.setGeometry((IGeometry) env);
+			container.addElement(pngPicElem, 0);
+		}catch(NullPointerException err){
+			System.out.println("所选要素图例不存在 " + this.featureName);
+		}*/
+		
 		
 		AgsObjAccess access = new AgsObjAccess(localResource.getLocalMapServer(), localResource.getServerContext());
 		
@@ -222,16 +153,30 @@ public class PictureBuilder {
 				mapFunc.getLayerDescriptions()[i].setVisible(true);
 			}
 		}
-		mapFunc.getLayerDescriptions()[1].setVisible(false);
 		
-		FileOutputStream fileOutStream = new FileOutputStream("c:\\pic\\" + this.fileName + ".jpg");
+		mapFunc.getLayerDescriptions()[1].setVisible(false);
+		mapFunc.setCurrentExtent(new WebExtent(89.400228, 31.542524, 104.9, 40.339596));
+		mapFunc.getLayerInfos()[6].setMinScale(0);
+		
+		FileOutputStream fileOutStream = new FileOutputStream("c:\\sharedata\\" + this.fileName + ".jpg");
 		
 		MapImage mapim = localResource.getMapServer().exportMapImage(mapFunc.getMapDescription(), idesc);
-		System.out.println(mapim.getImageURL());
 		fileOutStream.write(mapim.getImageData());
 		fileOutStream.close();
-		System.out.println("目标文件生成" + " " + this.fileName);
+		System.out.println("目标文件生成 " + this.fileName);
+		
+		mapFunc.getLayerDescriptions()[1].setVisible(true);
 		container.deleteAllElements();
+		
+		/*try{
+			java.net.URL url = new java.net.URL("http://222.18.139.70:8080/GisStutsPic_auto_SavePic.action?FILENAME=" + this.fileName + ".JPG");
+			@SuppressWarnings("unused")
+			URLConnection urlConn = url.openConnection();
+			//urlConn.connect();
+		}catch(Exception err){
+			System.out.println(err.getMessage());
+		}*/
+		
 	}
 	
 	private void changeADFLyrSourceByID(AGSLocalMapResource localResource) throws AutomationException, IOException{
@@ -246,25 +191,6 @@ public class PictureBuilder {
 		}
 	}
 	
-	public String getEndpoint() {
-		return gpEndpoint;
-	}
-
-	public void setEndpoint(String endpoint) {
-		this.gpEndpoint = endpoint;
-	}
-
-	public GPToolInfo getToolInfo() {
-		return toolInfo;
-	}
-
-	public void setToolInfo(GPToolInfo toolInfo) {
-		this.toolInfo = toolInfo;
-	}
-
-	public GPResult getResult() {
-		return result;
-	}
 
 	public String getPid() {
 		return pid;
@@ -298,21 +224,6 @@ public class PictureBuilder {
 		this.localMapResID = localMapResID;
 	}
 
-	public String getBase() {
-		return base;
-	}
-
-	public void setBase(String base) {
-		this.base = base;
-	}
-
-	public String getInterval() {
-		return interval;
-	}
-
-	public void setInterval(String interval) {
-		this.interval = interval;
-	}
 
 	public String getFeatureName() {
 		return featureName;
