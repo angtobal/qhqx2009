@@ -130,7 +130,6 @@ public class HistoryReviewTask implements WebContextObserver,
 	 * @see com.esri.adf.web.data.WebContextObserver#update(com.esri.adf.web.data.WebContext,
 	 *      java.lang.Object)
 	 */
-	@Override
 	public void update(WebContext webContext, Object obj) {
 		System.out.println("update");
 		webContext.refresh();
@@ -141,7 +140,6 @@ public class HistoryReviewTask implements WebContextObserver,
 	 * 
 	 * @see com.esri.adf.web.data.WebContextInitialize#destroy()
 	 */
-	@Override
 	public void destroy() {
 		if (localMapRes.getServerContext() == null)
 			return;
@@ -155,7 +153,6 @@ public class HistoryReviewTask implements WebContextObserver,
 	 * 
 	 * @see com.esri.adf.web.data.WebContextInitialize#init(com.esri.adf.web.data.WebContext)
 	 */
-	@Override
 	public void init(WebContext webContext) {
 		// webContext.addObserver(this);
 		localMapRes = (AGSLocalMapResource) webContext.getResourceById("ags2");
@@ -167,7 +164,6 @@ public class HistoryReviewTask implements WebContextObserver,
 	 * 
 	 * @see com.esri.adf.web.data.WebLifecycle#activate()
 	 */
-	@Override
 	public void activate() {
 		try {
 			if (addedLayers == null || addedLayers.size() <= 0)
@@ -188,7 +184,6 @@ public class HistoryReviewTask implements WebContextObserver,
 	 * 
 	 * @see com.esri.adf.web.data.WebLifecycle#passivate()
 	 */
-	@Override
 	public void passivate() {
 		try {
 			// remove layer from the AO
