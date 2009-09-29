@@ -106,7 +106,7 @@ public class PictureBuilder extends GPServerInfo{
 		container.addElement(textElement, 0);
 		
 		CustomMapLegend mapLegend = new CustomMapLegend(localResource);
-		mapLegend.createLegend();
+		mapLegend.attachLegendToFocusMap();
 		
 		/*PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
 		try{

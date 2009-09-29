@@ -3,10 +3,15 @@
  */
 package qhqx.ags;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
+import qhqx.bean.LegendImageView;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.arcgis.carto.IElement;
@@ -50,6 +55,8 @@ public class CustomMapLegend extends LegendInfo {
 	}
 
 	public void customLegendStyle(double patchHeight) throws AutomationException, IOException{
+		generateLegendFromLayer();
+		
 		legend.getFormat().setVerticalItemGap(0);
 		legend.getFormat().setHorizontalItemGap(0);
 		legend.getFormat().setShowTitle(false);
@@ -62,16 +69,31 @@ public class CustomMapLegend extends LegendInfo {
 		for(int i = 0; i < legend.getItemCount(); i++){
 			legend.getItem(i).setShowLabels(false);
 			legend.getItem(i).setShowDescriptions(false);
+			System.out.println(legend.getItem(i).getLayerNameSymbol().getFont());
 		}
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public String printLegendWithUrl() throws AutomationException, IOException{
-		generateLegendFromLayer();
 		customLegendStyle(12);
-		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnURL, 400, 60);
+		
+		IImageResult imgResult = buildLegendPic(esriImageReturnType.esriImageReturnURL, 400, 60);
 		
 		if(lgdImgRetType == esriImageReturnType.esriImageReturnURL){
+			
+			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			LegendImageView lgdImgView = (LegendImageView) externalContext.getSessionMap().get("legendImgView");
+			
+			String url = imgResult.getURL();
+			String[] tmp = url.split(":");
+			url = tmp[0] + "://" + lgdImgView.getServerDomin() + ":" + tmp[2];
+			System.out.println(url);
+			//url.replace("yq", "");
+			
+			lgdImgView.setImgURL(url);
+			
+			externalContext.getSessionMap().put("legendImgView", lgdImgView);
 			return imgResult.getURL();
 		}/*else{
 			randomStr = randomString(8);
@@ -84,7 +106,7 @@ public class CustomMapLegend extends LegendInfo {
 		
 	}
 
-	private IImageResult printLegend(int returnType, int height, int width) throws AutomationException, IOException {
+	private IImageResult buildLegendPic(int returnType, int height, int width) throws AutomationException, IOException {
 		IImageType imgType = (IImageType) serverContext.createObject(ImageType
 				.getClsid());
 		imgType.setFormat(esriImageFormat.esriImageJPG);
@@ -123,13 +145,12 @@ public class CustomMapLegend extends LegendInfo {
 	 * @throws AutomationException
 	 * @throws IOException
 	 */
-	public void createLegend() throws AutomationException, IOException{
+	public void attachLegendToFocusMap() throws AutomationException, IOException{
 		
 		IGraphicsContainer container = (IGraphicsContainer) focusMap;
 		focusMap.clearMapSurrounds();
 		IElement elem = (IElement) serverContext.createObject(PngPictureElement.getClsid());
 		
-		generateLegendFromLayer();
 		customLegendStyle(9);
 		/*System.out.println(legend.getItemCount());
 		printLegend(esriImageReturnType.esriImageReturnMimeData);*/
@@ -141,18 +162,14 @@ public class CustomMapLegend extends LegendInfo {
 		elem.setGeometry((IGeometry) env1);
 		
 		
-		IImageResult imgResult = printLegend(esriImageReturnType.esriImageReturnMimeData, 250, 70);
-		randomStr = randomString(8);
-		FileOutputStream fos = new FileOutputStream("c:\\pic\\feature2\\" + randomStr + ".jpg");
-		fos.write(imgResult.getMimeData());
-		fos.close();
+		exportLegendPic("c:\\pic\\feature2\\");
 		
 		PngPictureElement pngPicElem = (PngPictureElement) serverContext.createObject(PngPictureElement.getClsid());
 		try{
 			pngPicElem.importPictureFromFile("c:\\pic\\feature2\\" + randomStr + ".jpg");
 			System.out.println("c:\\pic\\feature2\\" + randomStr + ".jpg");
-			File tmpf = new File("c:\\pic\\feature2\\" + randomStr + ".jpg");
-			tmpf.delete();
+			//File tmpf = new File("c:\\pic\\feature2\\" + randomStr + ".jpg");
+			//tmpf.delete();
 			IEnvelopeGEN env2 = (IEnvelopeGEN) serverContext.createObject(Envelope.getClsid());
 			env2.putCoords(103.0, 31.5, 104.9, 39.5);
 			pngPicElem.setGeometry((IGeometry) env2);
@@ -163,6 +180,20 @@ public class CustomMapLegend extends LegendInfo {
 			System.out.println("所选要素图例不存在 ");
 		}
 		//container.addElement((IElement) msf, 0);
+	}
+
+	/**
+	 * @throws AutomationException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void exportLegendPic(String dirPath) throws AutomationException, IOException,
+			FileNotFoundException {
+		IImageResult imgResult = buildLegendPic(esriImageReturnType.esriImageReturnMimeData, 250, 70);
+		randomStr = randomString(8);
+		FileOutputStream fos = new FileOutputStream("D:\\workspace\\dynamicTask\\WebContent\\" + dirPath + randomStr + ".jpg");
+		fos.write(imgResult.getMimeData());
+		fos.close();
 	}
 	
 	public ISymbolBackground createSymbolBackground() throws AutomationException, IOException{
