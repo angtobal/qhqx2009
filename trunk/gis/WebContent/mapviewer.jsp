@@ -137,7 +137,7 @@ function FixY(){
 						</div>
 					</td>
 					<td>
-						<div style="float: left"><input width="25px" type="image"
+						<div style="float: left;padding:2px"><input width="25px" type="image"
 							height="25px" title="Toggle Overview Map"
 							onmouseout="//EsriUtils.setImageSrc(this, 'images/show-overview-map.png');"
 							onclick="esriToggleOverviewMap(); return false;"
@@ -158,6 +158,9 @@ function FixY(){
 					</td>
 				</tr>
 			</table>
+			<div id="legend" style="position: absolute; top: 100px; left: 290px; z-index: 2;">
+				<h:graphicImage value="#{legendImgView.imgURL}"/> 
+			</div>
 		</div>
     </td></tr></table>
 </td>
