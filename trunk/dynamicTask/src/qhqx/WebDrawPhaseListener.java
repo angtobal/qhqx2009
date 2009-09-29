@@ -209,7 +209,6 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				picBackgroundJob(paramMap, webContext, picBuild);
 			}
 				
-			
 			refreshTOC(webContext);
 		}
 	}
