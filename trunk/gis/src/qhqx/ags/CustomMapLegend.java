@@ -6,6 +6,7 @@ package qhqx.ags;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Random;
 
 import javax.faces.context.ExternalContext;
@@ -87,8 +88,9 @@ public class CustomMapLegend extends LegendInfo {
 			
 			String url = imgResult.getURL();
 			String[] tmp = url.split(":");
+			
 			url = tmp[0] + "://" + lgdImgView.getServerDomin() + ":" + tmp[2];
-			System.out.println(url);
+			System.out.println(new Date() + url);
 			//url.replace("yq", "");
 			
 			lgdImgView.setImgURL(url);
@@ -135,8 +137,18 @@ public class CustomMapLegend extends LegendInfo {
 		IMapServerLayout mapSvrLayout = mapServer;
 		IMapDescription mapDesc = mapServer.getServerInfo(
 				mapServer.getDefaultMapName()).getDefaultMapDescription();
+		//mapDesc.getLayerDescriptions().getElement(2).setVisible(false);//012356
+		//mapDesc.getLayerDescriptions().getElement(4).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(1).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(2).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(4).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(5).setVisible(false);
 		IImageResult imgResult = mapSvrLayout.exportLegend(legend, mapDesc,
 				mapDisp, null, imgDesc);
+		
+		mapDesc.getLayerDescriptions().getElement(2).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(5).setVisible(false);
+		mapDesc.getLayerDescriptions().getElement(6).setVisible(false);
 		
 		return imgResult;
 	}
@@ -191,7 +203,7 @@ public class CustomMapLegend extends LegendInfo {
 			FileNotFoundException {
 		IImageResult imgResult = buildLegendPic(esriImageReturnType.esriImageReturnMimeData, 250, 70);
 		randomStr = randomString(8);
-		FileOutputStream fos = new FileOutputStream("D:\\workspace\\dynamicTask\\WebContent\\" + dirPath + randomStr + ".jpg");
+		FileOutputStream fos = new FileOutputStream(dirPath + randomStr + ".jpg");
 		fos.write(imgResult.getMimeData());
 		fos.close();
 	}

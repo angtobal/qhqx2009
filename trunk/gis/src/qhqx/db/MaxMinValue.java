@@ -50,7 +50,7 @@ public class MaxMinValue {
 		return rs;
 	}
 	@SuppressWarnings("unused")
-	private ResultSet getDate(){
+	private ResultSet getData(){
 		return getDate("select * from SJY_GIS_INFO where pid='" + pid.toString() + "'");
 	}
 
@@ -92,7 +92,6 @@ public class MaxMinValue {
 		try {
 			System.out.println(gisData.getRow());
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}catch(NullPointerException e){
 			e.printStackTrace();

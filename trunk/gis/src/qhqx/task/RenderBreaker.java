@@ -18,12 +18,13 @@ public class RenderBreaker {
 	
 	//增加构造函数，从数据库获得。。
 	public RenderBreaker(String pid){
+		this.pid = pid;
 		MaxMinValue maxmin = new MaxMinValue();
 		maxmin.setPid(pid);
 		double[] temp = maxmin.selectMaxMinValue();
 		max = temp[0];
 		min = temp[1];
-		this.pid = pid;
+		
 		numOfClass = 32;
 	}
 	
@@ -43,6 +44,16 @@ public class RenderBreaker {
 		
 		return commonBreak;
 		
+	}
+	
+	public double[] createRenderBreakDescending(){
+		double[] commonBreak = createRenderBreak();
+		int arrayLen = commonBreak.length;
+		double[] reverseBreak = new double[arrayLen];
+		for(int i = 0; i < arrayLen; i++){
+			reverseBreak[i] = commonBreak[arrayLen - i - 1];
+		}
+		return reverseBreak;
 	}
 	
 	public int countNumOfClass(){

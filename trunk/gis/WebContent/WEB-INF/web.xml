@@ -16,7 +16,9 @@
       /WEB-INF/functionalities/ejb-functionalities.xml,
       /WEB-INF/functionalities/graphics-functionalities.xml,
       /WEB-INF/ajax-renderers.xml,
-      /WEB-INF/context-attributes.xml
+      /WEB-INF/context-attributes.xml,
+      /WEB-INF/graphic-layer.xml
+      
     </param-value>
   </context-param>
 
@@ -63,6 +65,12 @@
       com.esri.adf.web.util.ADFServletContextListener
     </listener-class>
   </listener>
+  <listener>
+  	<listener-class>
+  		qhqx.sysop.GraphicUpdateContextListener
+  	</listener-class>
+  </listener>
+
 
   <!-- Servlets  -->
   <servlet>

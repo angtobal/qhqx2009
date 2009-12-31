@@ -6,6 +6,7 @@ package qhqx;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -14,15 +15,22 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
+import qhqx.ags.GraphicLayerConfig;
+import qhqx.task.IServerTask;
 import qhqx.task.PictureBuilder;
 import qhqx.task.RealTimeContour;
 
+import com.esri.adf.web.ags.data.AGSLocalMapResource;
+import com.esri.adf.web.ags.data.AGSMapFunctionality;
+import com.esri.adf.web.data.MapFunctionality;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
 import com.esri.adf.web.data.WebToc;
 import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.adf.web.faces.event.TaskEvent;
 import com.esri.adf.web.util.WebUtil;
+import com.esri.arcgisws.LayerDescription;
+import com.esri.arcgisws.MapLayerInfo;
 
 /**
  * @author yan
@@ -54,27 +62,20 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		
 		WebContext webContext = WebUtil.getWebContext(facesContext.getViewRoot());
 		
-		if(paramMap.get(PID) == null){
-			System.out.println("pid is null");
+		if(paramMap.get(PID) == null || paramMap.get(BASE) == null || paramMap.get(INTERVAL) == null){
+			System.out.println("pid base or interval is null");
 			return;
 		}
 		System.out.println("pid = " + paramMap.get(PID).toString());
-		if(paramMap.get(BASE) == null){
-			System.out.println("base is null");
-			//return;
-		}
-		//System.out.println("base = " + paramMap.get(BASE).toString());
-		if(paramMap.get(INTERVAL) == null){
-			System.out.println("interval is null");
-			return;
-		}
-		System.out.println("interval = " + paramMap.get(INTERVAL).toString());
 		
 		if(paramMap.get(Task).toString().equals("realtime")){
 			doRealtimeTask(webContext, paramMap);
-			
 		}else if(paramMap.get(Task).toString().equals("buildpic")){
-			doPicbuildTask(webContext, paramMap);
+			try {
+				doPicbuildTask(webContext, paramMap);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 			
 		/*try {
@@ -132,26 +133,21 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap() != null){
 			Map<String, String> paramMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-			if(paramMap.get(PID) == null){
+			if(paramMap.get(PID) == null || paramMap.get(BASE) == null || paramMap.get(INTERVAL) == null){
 				System.out.println("pid is null");
 				return;
 			}
 			System.out.println("pid = " + paramMap.get(PID).toString());
-			if(paramMap.get(BASE) == null){
-				System.out.println("base is null");
-				//return;
-			}
-			//System.out.println("base = " + paramMap.get(BASE).toString());
-			if(paramMap.get(INTERVAL) == null){
-				System.out.println("interval is null");
-				return;
-			}
 			
 			if(paramMap.get(Task).toString().equals("realtime")){
 				doRealtimeTask(webContext, paramMap);
 				
 			}else if(paramMap.get(Task).toString().equals("buildpic")){
-				doPicbuildTask(webContext, paramMap);
+				try {
+					doPicbuildTask(webContext, paramMap);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 				
 			
@@ -159,7 +155,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			newToc.init(webContext);
 			
 			webContext.getWebToc().destroy();
-			newToc.setExpandLevel(3);
+			//newToc.setExpandLevel(3);
 			webContext.setWebToc(newToc);
 			
 			webContext.refresh();
@@ -169,39 +165,44 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	/**
 	 * @param webContext
 	 * @param paramMap
+	 * @throws IOException 
 	 */
 	public void doPicbuildTask(WebContext webContext,
-			Map<String, String> paramMap) {
+			Map<String, String> paramMap) throws IOException {
 		if(paramMap.get(FILE_NAME) == null){
 			System.out.println("filename is null");
 			return;
 		}
-		PictureBuilder picBuild = new PictureBuilder();
-		picBuild.setWebContext(webContext);
-		picBuild.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-		picBuild.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-		picBuild.setLocalMapResID("ags1");
-		picBuild.setPid(paramMap.get(PID).toString());
-		picBuild.setBase(paramMap.get(BASE).toString());
-		picBuild.setInterval(paramMap.get(INTERVAL).toString());
-		picBuild.setFileName(paramMap.get(FILE_NAME).toString());
+		
+		GraphicLayerConfig glf = new GraphicLayerConfig(webContext);
+		try {
+			glf.addGraphicLayerByPid(paramMap.get(PID).toString());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		IServerTask task = new PictureBuilder(webContext);
+		task.setWebContext(webContext);
+		task.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
+		task.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
+		task.setLocalMapResID("ags1");
+		task.setPid(paramMap.get(PID).toString());
+		task.setBase(paramMap.get(BASE).toString());
+		task.setInterval(paramMap.get(INTERVAL).toString());
 		if(paramMap.get(FeatureName) != null){
-			picBuild.setFeatureName(paramMap.get(FeatureName).toString());
+			task.setFeatureName(paramMap.get(FeatureName).toString());
 		}
 		if(paramMap.get(PICTURE_HEAD) != null){
-			picBuild.setPictureHead(paramMap.get(PICTURE_HEAD).toString());
+			task.setPicHead(paramMap.get(PICTURE_HEAD).toString());
 		}else{
-			picBuild.setPictureHead("Õº∆¨√Ë ˆ–≈œ¢...");
+			task.setPicHead("Õº∆¨√Ë ˆ–≈œ¢...");
 		}
-		try {
-			picBuild.gpResultDisplay();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		if (task instanceof PictureBuilder) {
+			PictureBuilder picBuild = (PictureBuilder) task;
+			picBuild.setFileName(paramMap.get(FILE_NAME).toString());
+		}	
+		
+		task.gpResultDisplay();
 	}
 
 	/**
@@ -210,29 +211,32 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	 */
 	public void doRealtimeTask(WebContext webContext,
 			Map<String, String> paramMap) {
-		RealTimeContour realTimeSurface = new RealTimeContour();
-		realTimeSurface.setWebContext(webContext);
-		realTimeSurface.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
-		realTimeSurface.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
-		realTimeSurface.setLocalMapResID("ags1");
-		realTimeSurface.setPid(paramMap.get(PID).toString());
-		realTimeSurface.setBase(paramMap.get(BASE).toString());
-		realTimeSurface.setInterval(paramMap.get(INTERVAL).toString());
+		
+		GraphicLayerConfig glf = new GraphicLayerConfig(webContext);
+		try {
+			glf.addGraphicLayerByPid(paramMap.get(PID).toString());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		IServerTask task = new RealTimeContour(webContext);
+		task.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
+		task.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
+		task.setLocalMapResID("ags1");
+		task.setPid(paramMap.get(PID).toString());
+		task.setBase(paramMap.get(BASE).toString());
+		task.setInterval(paramMap.get(INTERVAL).toString());
 		if(paramMap.get(FeatureName) != null){
-			realTimeSurface.setFeatureName(paramMap.get(FeatureName).toString());
+			task.setFeatureName(paramMap.get(FeatureName).toString());
 		}
 		if(paramMap.get(PICTURE_HEAD) != null){
-			realTimeSurface.setPicHead(paramMap.get(PICTURE_HEAD).toString());
+			task.setPicHead(paramMap.get(PICTURE_HEAD).toString());
 		}else{
-			realTimeSurface.setPicHead(" ");
+			task.setPicHead(" ");
 		}
+		
 		try {
-			//realTimeSurface.generateContout(webContext, "servertask");
-			realTimeSurface.gpResultDisplay();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
+			task.gpResultDisplay();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

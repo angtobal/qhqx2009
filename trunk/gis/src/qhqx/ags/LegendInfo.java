@@ -53,7 +53,7 @@ public class LegendInfo {
 						.createObject(HorizontalLegendItem.getClsid());
 				layer = mapServer.getLayer(mapServer.getDefaultMapName(), 2);
 				hLegendItem.setLayerByRef(layer);*/
-				layer = mapServer.getLayer(mapServer.getDefaultMapName(), 3);
+				layer = mapServer.getLayer(mapServer.getDefaultMapName(), 3+3);
 				vLegendItem.setLayerByRef(layer);
 				legend.addItem(vLegendItem);
 				

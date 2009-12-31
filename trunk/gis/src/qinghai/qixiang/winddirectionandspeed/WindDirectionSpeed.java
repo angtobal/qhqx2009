@@ -78,15 +78,18 @@ public class WindDirectionSpeed  {
 
 				geolat = gisData.getDouble("LATITUDE");
 				geolong = gisData.getDouble("longitude");
-				direction = gisData.getDouble("ZVALUE1");
-				speed = gisData.getDouble("ZVALUE2");
+				/*direction = gisData.getDouble("ZVALUE1");
+				speed = gisData.getDouble("ZVALUE2");*/
+				direction = gisData.getDouble("ZVALUE2");
+				speed = gisData.getDouble("ZVALUE1");
 
 				WebTrueTypeMarkerSymbol trueMarkerSymbol = new WebTrueTypeMarkerSymbol();
 				trueMarkerSymbol.setFontName("ESRI Weather");
 				trueMarkerSymbol.setFontSize(60);
 				trueMarkerSymbol.setFontColor("255,0,0");
-				trueMarkerSymbol
-						.setTextPosition(WebTrueTypeMarkerSymbol.CIRCLE);
+				/*trueMarkerSymbol
+						.setTextPosition(WebTrueTypeMarkerSymbol.CIRCLE);*/
+				trueMarkerSymbol.setTextPosition(WebTrueTypeMarkerSymbol.CENTER);
 				trueMarkerSymbol.setFontStyle(WebTrueTypeMarkerSymbol.BOLD);
 				trueMarkerSymbol.setAngle(direction);
 				String Speed = SelectSpeedPic.selectSpeedPic(speed.intValue());
@@ -119,8 +122,10 @@ public class WindDirectionSpeed  {
 
 				geolat = gisData.getDouble("LATITUDE");
 				geolong = gisData.getDouble("longitude");
-				direction = gisData.getDouble("ZVALUE1");
-				speed = gisData.getDouble("ZVALUE2");
+				/*direction = gisData.getDouble("ZVALUE1");
+				speed = gisData.getDouble("ZVALUE2");*/
+				direction = gisData.getDouble("ZVALUE2");
+				speed = gisData.getDouble("ZVALUE1");
 
 				WebTrueTypeMarkerSymbol trueMarkerSymbol = new WebTrueTypeMarkerSymbol();
 				trueMarkerSymbol.setFontName("新宋体");
@@ -128,7 +133,7 @@ public class WindDirectionSpeed  {
 				trueMarkerSymbol.setFontColor("0,0,255");
 				trueMarkerSymbol
 						.setTextPosition(WebTrueTypeMarkerSymbol.BOTTOM);
-				trueMarkerSymbol.addTextValue("风向：" + direction.toString());
+				trueMarkerSymbol.addTextValue(" 风向：" + direction.toString());
 				WebPoint webPoint = new WebPoint();
 				webPoint.putCoords(geolong, geolat - 0.001);
 
@@ -144,7 +149,8 @@ public class WindDirectionSpeed  {
 				trueMarkerSymbo2.setFontName("新宋体");
 				trueMarkerSymbo2.setFontSize(10);
 				trueMarkerSymbo2.setFontColor("0,0,255");
-				trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.TOP);
+				/*trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.TOP);*/
+				trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.RIGHT);
 				trueMarkerSymbo2.addTextValue("风速：" + speed.toString());
 				WebPoint webPoint2 = new WebPoint();
 				webPoint2.putCoords(geolong, geolat - 0.003);

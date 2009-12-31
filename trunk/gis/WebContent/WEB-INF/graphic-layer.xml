@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE faces-config PUBLIC "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.0//EN" "http://java.sun.com/dtd/web-facesconfig_1_0.dtd">
+<managed-bean>
+	<managed-bean-name>graphicsResource</managed-bean-name>
+	<managed-bean-class>
+		com.esri.adf.web.data.graphics.GraphicsResource
+	</managed-bean-class>
+	<managed-bean-scope>none</managed-bean-scope>
+	<managed-property>
+		<property-name>functionalities</property-name>
+		<map-entries>
+			<map-entry>
+				<key>map</key>
+				<value>#{graphicsMap}</value>
+			</map-entry>
+			<map-entry>
+				<key>toc</key>
+				<value>#{graphicsToc}</value>
+			</map-entry>
+			<!-- <map-entry>
+				<key>overview</key>
+				<value>#{graphicsOverview}</value>
+				</map-entry>
+				<map-entry>
+				<key>query</key>
+				<value>#{graphicsQuery}</value>
+				</map-entry> -->
+		</map-entries>
+	</managed-property>
+	<managed-property>
+		<property-name>alias</property-name>
+		<value>属性信息</value>
+	</managed-property>
+</managed-bean>
