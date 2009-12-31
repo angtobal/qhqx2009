@@ -9,24 +9,29 @@ package qhqx.task;
  */
 public class WeatherRenderInfo {
 	// 温度
+
+	final static public int[] TEMPRATURE_RGB = { 0x330d80, 0x462192, 0x5440b6,
+			0x4349c9, 0x4d66d2, 0x5775d5, 0x4f97e1, 0x84b9fb, 0x6cc6ec,
+			0x75e5eb, 0xabf7eb, 0xcbfbda, 0xeefdca, 0xf9fad5, 0xfcf2ac,
+			0xfde37d, 0xfcc865, 0xfaa644, 0xfa9200, 0xff791a, 0xf05d04,
+			0xf74f14, 0xfc2603, 0xe70000, 0xd50637, 0xbb012d };
+
 	/*
-	 * final static public int[] TEMPRATURE_RGB = {0x68b823, 0x99cf17, 0xb4da11,
-	 * 0xcde700, 0xe5f437, 0xffe47b, 0xfecc5d, 0xfeb46d, 0xfd9a7b, 0xfb8172,
-	 * 0xfa6648, 0xfc4e43, 0xfb0035, 0xf40058, 0xf30074, 0xf20080, 0xf100aa,
-	 * 0xdb0080, 0xdd188b, 0xe04da5, 0xdf65b0, 0xe07dbd, 0xe295c9, 0xe2aed5,
-	 * 0xe3c5e1, 0xb3cde4, 0x81bcda, 0x68b3d3, 0x4eaacf, 0x0290c0, 0x027fb9,
-	 * 0x006fb1};
+	 * final static public int[] TEMPRATURE_RGB = { 0xeb0000, 0xe80000,
+	 * 0xf1140c, 0xfb3f34, 0xff4a56, 0xfe3b9b, 0xef00f6, 0x9406f2, 0x3f05ff,
+	 * 0x0208fa, 0x0257f2, 0x00aaf4, 0x0bf8f0, 0x03febb, 0x04ee2d, 0x09e000,
+	 * 0x2ee636, 0x94fb62, 0xb6ff4e, 0xe6fa27, 0xfefe00, 0xfefe00, 0xf6f867,
+	 * 0xf8ff2c, 0xf8f570, 0xfafc9b, 0xfffac6, 0xf1ded0, 0xd3c0b2, 0xdfe6d6,
+	 * 0xff9999, 0xff99ff, 0x9999ff, 0x99ffff, 0x99ff99, };
 	 */
-	final static public int[] TEMPRATURE_RGB = { 0xeb0000, 0xe80000, 0xf1140c,
-			0xfb3f34, 0xff4a56, 0xfe3b9b, 0xef00f6, 0x9406f2, 0x3f05ff,
-			0x0208fa, 0x0257f2, 0x00aaf4, 0x0bf8f0, 0x03febb, 0x04ee2d,
-			0x09e000, 0x2ee636, 0x94fb62, 0xb6ff4e, 0xe6fa27, 0xfefe00,
-			0xfefe00, 0xf6f867, 0xf8ff2c, 0xf8f570, 0xfafc9b, 0xfffac6,
-			0xf1ded0, 0xd3c0b2, 0xdfe6d6, 0xe6fff9, 0xdafaf9, 0xd9ffff,
-			0xecfcfc, 0xf2ffff, };
-	final static public double[] TEMPRATURE_BREAK = { -35, -33, -31, -29, -27,
-			-25, -23, -21, -19, -17, -15, -13, -11, -9, -7, -5, -3, -1, 1, 3,
-			5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35 };
+	/*
+	 * final static public double[] TEMPRATURE_BREAK = { -35, -33, -31, -29,
+	 * -27, -25, -23, -21, -19, -17, -15, -13, -11, -9, -7, -5, -3, -1, 1, 3, 5,
+	 * 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35 };
+	 */
+	final static public double[] TEMPRATURE_BREAK = {50, 48, 44, 40, 36, 32, 28,
+			24, 20, 16, 12, 8, 4, 0, -4, -8, -12, -16, -20, -24, -28, -32, -36,
+			-40, -44, -48 };
 
 	// 湿度
 	final static public int[] HUMIDITY_RGB = { 0x35a02c, 0x008637, 0x019271,
@@ -67,12 +72,19 @@ public class WeatherRenderInfo {
 			1010, 1020, 1030 };
 
 	// 降水
-	final static public int[] PRECIPITATION_RGB = { 0xebd3e9, 0xe2aed5,
-			0xe04da5, 0xdb0080, 0xf30074, 0xfc4e43, 0xfd9a7b, 0xfecc5d,
-			0xe5f437, 0xcde700, 0x99cf17, 0x68b823, 0x0560a7, 0x027fb9,
-			0x36b1c1, 0xb4e2d8 };
+	/*
+	 * final static public int[] PRECIPITATION_RGB = { 0xebd3e9, 0xe2aed5,
+	 * 0xe04da5, 0xdb0080, 0xf30074, 0xfc4e43, 0xfd9a7b, 0xfecc5d, 0xe5f437,
+	 * 0xcde700, 0x99cf17, 0x68b823, 0x0560a7, 0x027fb9, 0x36b1c1, 0xb4e2d8 };
+	 */
+	final static public int[] PRECIPITATION_RGB = { 0xf9fcd7, 0xd1f9cd,
+			0xa7fac8, 0x6cf2e1, 0x12d7ef, 0x18a0e0, };
 	final static public double[] PRECIPITATION_BREAK = { 0.1, 1, 2, 5, 10, 15,
 			20, 25, 30, 40, 50, 70, 100, 150, 200 };
+	final static public double[] PRECIPITATION_BREAK_12H = { 140.0, 70.0, 30.0,
+			15.0, 5, 0, 0.1 };
+	final static public double[] PRECIPITATION_BREAK_24H = { 250.0, 100.0,
+			50.0, 25.0, 10.0, 0.1 };
 
 	// 风速
 	final static public int[] WIND_SPEED_RGB = { 2, 4, 6, 8, 10, 12, 14, 16,
@@ -127,16 +139,28 @@ public class WeatherRenderInfo {
 			return WeatherRenderInfo.HUMIDITY_RGB;
 		} else if (featureName.equals("qiya")
 				|| featureName.equalsIgnoreCase("V13004")) {
-			return WeatherRenderInfo.ATMOSPHERIC_RGB;
+			// return WeatherRenderInfo.ATMOSPHERIC_RGB;
+			return WeatherRenderInfo.COMMON_RGB;
 		} else if (featureName.equals("jiangshui")
-				|| featureName.equalsIgnoreCase("V13023")) {
+				|| featureName.equalsIgnoreCase("V13023")
+				|| featureName.equals("jiangshui12")
+				|| featureName.equals("jiangshui24")) {
 			return WeatherRenderInfo.PRECIPITATION_RGB;
-		} else if (featureName.equals("fengsu")
+		} /*
+			 * else if (featureName.equals("jiangshui12") ||
+			 * featureName.equalsIgnoreCase("V13023")) { return
+			 * WeatherRenderInfo.PRECIPITATION_RGB; } else if
+			 * (featureName.equals("jiangshui24") ||
+			 * featureName.equalsIgnoreCase("V13023")) { return
+			 * WeatherRenderInfo.PRECIPITATION_RGB; }
+			 */else if (featureName.equals("fengsu")
 				|| featureName.equalsIgnoreCase("V11302")) {
-			return WeatherRenderInfo.WIND_SPEED_RGB;
+			// return WeatherRenderInfo.WIND_SPEED_RGB;
+			return WeatherRenderInfo.COMMON_RGB;
 		} else if (featureName.equals("fengxiang")
 				|| featureName.equalsIgnoreCase("V11301")) {
-			return WeatherRenderInfo.WIND_SPEED_RGB;
+			// return WeatherRenderInfo.WIND_SPEED_RGB;
+			return WeatherRenderInfo.COMMON_RGB;
 		} else {
 			// return WeatherRenderInfo.TEMPRATURE_RGB;
 			return WeatherRenderInfo.COMMON_RGB;
@@ -152,16 +176,23 @@ public class WeatherRenderInfo {
 			return WeatherRenderInfo.HUMIDITY_BREAK;
 		} else if (featureName.equals("qiya")
 				|| featureName.equalsIgnoreCase("V13004")) {
-			return WeatherRenderInfo.ATMOSPHERIC_BREAK;
+			// return WeatherRenderInfo.ATMOSPHERIC_BREAK;
+			return WeatherRenderInfo.COMMON_BREAK;
 		} else if (featureName.equals("jiangshui")
 				|| featureName.equalsIgnoreCase("V13023")) {
 			return WeatherRenderInfo.PRECIPITATION_BREAK;
+		} else if (featureName.equals("jiangshui12")) {
+			return WeatherRenderInfo.PRECIPITATION_BREAK_12H;
+		} else if (featureName.equals("jiangshui24")) {
+			return WeatherRenderInfo.PRECIPITATION_BREAK_24H;
 		} else if (featureName.equals("fengsu")
 				|| featureName.equalsIgnoreCase("V11302")) {
-			return WeatherRenderInfo.WIND_SPEED_BREAK;
+			// return WeatherRenderInfo.WIND_SPEED_BREAK;
+			return WeatherRenderInfo.COMMON_BREAK;
 		} else if (featureName.equals("fengxiang")
 				|| featureName.equalsIgnoreCase("V11301")) {
-			return WeatherRenderInfo.WIND_SPEED_BREAK;
+			// return WeatherRenderInfo.WIND_SPEED_BREAK;
+			return WeatherRenderInfo.COMMON_BREAK;
 		} else {
 			return WeatherRenderInfo.COMMON_BREAK;
 		}
@@ -205,6 +236,10 @@ public class WeatherRenderInfo {
 		} else if (featureName.equals("jiangshui")
 				|| featureName.equalsIgnoreCase("V13023")) {
 			return new String("jiangshui");
+		} else if (featureName.equals("jiangshui12")) {
+			return new String("jiangshui12");
+		} else if (featureName.equals("jiangshui24")) {
+			return new String("jiangshui24");
 		} else if (featureName.equals("fengsu")
 				|| featureName.equalsIgnoreCase("V11302")) {
 			return new String("fengsu");

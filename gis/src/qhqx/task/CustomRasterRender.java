@@ -8,6 +8,7 @@
 package qhqx.task;
 
 import java.io.IOException;
+import java.util.Date;
 
 import com.esri.arcgis.carto.IRasterClassifyColorRampRenderer;
 import com.esri.arcgis.carto.IRasterRGBRenderer;
@@ -100,7 +101,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 	//分级渲染raster
 	public void renderByRasterClassify(IServerContext serverContext) throws AutomationException, IOException{
 		System.out.println(WeatherRenderInfo.getEnName(featureName));
-		countNumOfClass();
+		
 		
 		
 		//得到图层，创建分级渲染器
@@ -110,13 +111,13 @@ public class CustomRasterRender extends RasterRenderInfo {
 		
 		//设置渲染和刷新的栅格图
 		rasterRenderer.setRasterByRef(raster);
+		countNumOfClass();
 		classifyRenderer.setClassCount(numOfClass);
-		
-		rasterRenderer.update();
+		rasterRenderer.update();//必须，否则label数值位数有问题，secClassCount在fillSymbol和color之前设置
 		
 		//创建颜色坡度 
-		IAlgorithmicColorRamp ramp = (IAlgorithmicColorRamp) serverContext.createObject(AlgorithmicColorRamp.getClsid());
-		ramp.setSize(numOfClass);
+		/*IAlgorithmicColorRamp ramp = (IAlgorithmicColorRamp) serverContext.createObject(AlgorithmicColorRamp.getClsid());
+		ramp.setSize(numOfClass);*/
 		//ramp.createRamp(arg0);
 		
 		//为分级创建symbol
@@ -127,44 +128,58 @@ public class CustomRasterRender extends RasterRenderInfo {
 		//遍历分级并应用颜色和标签
 		
 		//int[] a = {0x0000FF,0x00FF00,0xFFFF00,0xFFFFFF,0x00FFFF,0xFF0000,0x000000};
-		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
+		if(WeatherRenderInfo.getEnName(featureName).equals("common") || WeatherRenderInfo.getEnName(featureName).equals("fengsu") || WeatherRenderInfo.getEnName(featureName).equals("qiya")){
 			
 			RenderBreaker rb = new RenderBreaker(pid);
-			double[] tmpBreak = rb.createRenderBreak();
+			/*double[] tmpBreak = rb.createRenderBreak();*/
+			double[] tmpBreak = rb.createRenderBreakDescending();
 			numOfClass = rb.getNumOfClass();
 			
 			double rgbSelectInterval = 0;
 			int numOfColor = WeatherRenderInfo.getRGB("common").length;
 			rgbSelectInterval = numOfColor / numOfClass;
-			for(int i = 0; i < classifyRenderer.getClassCount() ; i++){
-				System.out.println(tmpBreak[i]);
-				color.setRGB(WeatherRenderInfo.getRGB(featureName)[Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1))]);
-				System.out.println("colorIndex: " + Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1)));
+			for(int i = 0; i < classifyRenderer.getClassCount(); i++){
+				//System.out.println(tmpBreak[i]);
+				color.setRGB(WeatherRenderInfo.getRGB("common")[Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1))]);
+				//System.out.println("colorIndex: " + Math.abs(numOfColor - Math.abs((int)(i * rgbSelectInterval) + 1)));
 				color.setTransparency((byte)50);
 				fillSymbol.setColor(color);
+				/*调整顺序*/
+				//int j = classifyRenderer.getClassCount() - i - 1;
+				
 				classifyRenderer.setBreak(i, tmpBreak[i]);
 				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
-				classifyRenderer.setLabel(i, " <" + (double)((int)(classifyRenderer.getBreak(i)*10))/10);
+				classifyRenderer.setLabel(i, "  " + (double)((int)(classifyRenderer.getBreak(i)*10))/10);
 			}
-		}else{
-			for(int i = 0; i < classifyRenderer.getClassCount() - 1; i++){
+		}else{//渲染已固定的处理
+			//超过最大值范围，i=0
+			/*color.setRGB(WeatherRenderInfo.getRGB(featureName)[0]);
+			color.setTransparency((byte)50);
+			fillSymbol.setColor(color);
+			classifyRenderer.setBreak(0, WeatherRenderInfo.getBreak(featureName)[0]);
+			classifyRenderer.setSymbol(0, (ISymbol) fillSymbol);
+			classifyRenderer.setLabel(0, "  ");*/
+			for(int i = 0; i < numOfClass - 1; i++){
 				//fillSymbol.setColor((IColor)ramp.getColor(i));
 				//color.setRGB(0xFF0000);
 				//color.setRGB(a[i]);
 				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
 				color.setTransparency((byte)50);
 				fillSymbol.setColor(color);
+				/*调整顺序*/
+				//int j = classifyRenderer.getClassCount() - i;
+				
 				classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
 				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
-				classifyRenderer.setLabel(i, " <" + classifyRenderer.getBreak(i));
+				classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
 				//color = null;
-				classifyRenderer.setLabel(classifyRenderer.getClassCount()-1, " 其他");
 			}
+			classifyRenderer.setLabel(classifyRenderer.getClassCount()-1, "  Other");
 		}
 		
 		
 		
-		System.out.println("render");
+		System.out.println(new Date() + "rendered");
 		
 		//刷新渲染器并插入到图层
 		rasterRenderer.update();
@@ -232,7 +247,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 	}
 	
 	private int countNumOfClass(){
-		if(WeatherRenderInfo.getEnName(featureName).equals("common")){
+		if(WeatherRenderInfo.getEnName(featureName).equals("common") || WeatherRenderInfo.getEnName(featureName).equals("fengsu") || WeatherRenderInfo.getEnName(featureName).equals("qiya")){
 			/*if(){
 				
 			}else{*/
