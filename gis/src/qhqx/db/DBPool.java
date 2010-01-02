@@ -54,6 +54,7 @@ public class DBPool {
 		availableConnections.addElement(conn);
 		checkedOut--;
 		notifyAll();
+		System.out.println("conn released:" + conn);
 	}
 	
 	public synchronized void release(){

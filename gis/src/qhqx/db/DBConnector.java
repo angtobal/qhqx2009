@@ -97,9 +97,9 @@ public class DBConnector {
 	private void init() {
 		InputStream fileInputStream = null;
 		try{
-			fileInputStream = new FileInputStream(System.getProperty("user.dir") + java.io.File.separator + "db.properties");
+			//fileInputStream = new FileInputStream(System.getProperty("user.dir") + java.io.File.separator + "db.properties");
 			//fileInputStream = new FileInputStream(System.getProperty("user.dir") + java.io.File.separator + "src" + java.io.File.separator + "db.properties");
-			//fileInputStream = new FileInputStream("d:\\workspace\\gis\\src\\db.properties");
+			fileInputStream = new FileInputStream("d:\\workspace\\gis\\src\\db.properties");
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}

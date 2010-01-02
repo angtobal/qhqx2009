@@ -28,7 +28,9 @@ public class AttributeOfStn {
 		Connection conn = connector.getConnection("oracle");
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("select longitude,latitude,stn_name from v_gis_info where pid='" + pid.toString() + "'");
-			
+		
+		connector.freeConnection("oracle", conn);
+		
 		return rs;	
 	}
 }
