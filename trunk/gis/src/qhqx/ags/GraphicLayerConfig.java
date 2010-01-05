@@ -40,7 +40,7 @@ public class GraphicLayerConfig {
 		
 		WebSimpleMarkerSymbol defaultMarkerSymbol = new WebSimpleMarkerSymbol();
 	    defaultMarkerSymbol.setColor("0,0,255");
-	    defaultMarkerSymbol.setWidth(12);
+	    defaultMarkerSymbol.setWidth(0);
 	    defaultMarkerSymbol.setMarkerType(WebSimpleMarkerSymbol.CIRCLE);
 		
 		AttributeOfStn stn = new AttributeOfStn();
