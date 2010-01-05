@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -23,6 +24,7 @@ import qhqx.task.RealTimeContour;
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
 import com.esri.adf.web.data.MapFunctionality;
+import com.esri.adf.web.data.TocNode;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
 import com.esri.adf.web.data.WebToc;
@@ -56,6 +58,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 
 	@SuppressWarnings("unchecked")
 	public void afterPhase(PhaseEvent event) {
+		System.out.println("after phase");
 		FacesContext facesContext = event.getFacesContext();
 		ExternalContext externalContext = facesContext.getExternalContext();
 		Map<String, String> paramMap = externalContext.getRequestParameterMap();
@@ -96,6 +99,15 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		newToc.setExpandLevel(3);
 		webContext.setWebToc(newToc);
 		
+		Iterator<TocNode> rootNodes = webContext.getWebToc().getRootNodes().iterator();
+		rootNodes.next().getChildren().iterator().next().getChildren().clear();
+		for(TocNode node : rootNodes.next().getChildren()){
+			node.setExpanded(true);
+			for(TocNode n : node.getChildren()){
+				n.setExpanded(false);
+			}
+		}
+		
 		webContext.refresh();
 		//facesContext.responseComplete();
 		
@@ -129,7 +141,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	@SuppressWarnings("unchecked")
 	public void init(WebContext webContext) {
 		//wctx
-		System.out.println("first time");
+		System.out.println("task listern");
 		
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap() != null){
 			Map<String, String> paramMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -157,6 +169,16 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			webContext.getWebToc().destroy();
 			//newToc.setExpandLevel(3);
 			webContext.setWebToc(newToc);
+			
+			//webContext.getWebToc().findNode("œ‘ æ’æ√˚").getChildren().clear();
+			Iterator<TocNode> rootNodes = webContext.getWebToc().getRootNodes().iterator();
+			rootNodes.next().getChildren().iterator().next().getChildren().clear();
+			for(TocNode node : rootNodes.next().getChildren()){
+				node.setExpanded(true);
+				for(TocNode n : node.getChildren()){
+					n.setExpanded(false);
+				}
+			}
 			
 			webContext.refresh();
 		}

@@ -107,7 +107,7 @@ public class GPServerInfo {
 			Thread.currentThread().sleep(3000);
 
 			gpJobStatus = gpServer.getJobStatus(JobID);
-			System.out.println(gpJobStatus.toString() + JobID.toString());
+			System.out.println(gpJobStatus.toString() + ": " + JobID.toString());
 
 			if (gpJobStatus == EsriJobStatus.esriJobWaiting) {
 				waitCount += 1;
@@ -183,7 +183,7 @@ public class GPServerInfo {
 			Thread.currentThread().sleep(3000);
 
 			gpJobStatus = gpServer.getJobStatus(JobID);
-			System.out.println(gpJobStatus.toString() + JobID.toString());
+			System.out.println(gpJobStatus.toString() + ": " + JobID.toString());
 
 			if (gpJobStatus == EsriJobStatus.esriJobWaiting) {
 				waitCount += 1;
@@ -330,6 +330,8 @@ public class GPServerInfo {
 			AGSOverviewFunctionality of = (AGSOverviewFunctionality) localResource
 					.getFunctionality(OverviewFunctionality.FUNCTIONALITY_NAME);
 			of.initFunctionality(localResource);
+			//webOv.setDrawExtent(new WebExtent(90,30,100,35));
+			webOv.setShowFullExtent(false);
 			webOv.exportImage();
 		}
 	}

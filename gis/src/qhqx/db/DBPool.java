@@ -84,10 +84,14 @@ public class DBPool {
 			}
 		}else if(maxConnections == 0 || checkedOut < maxConnections){
 			conn = newConnection();
-			System.out.println(new Date());
+			System.out.println("create conn:  " + new Date());
 		}
 		if(conn != null){
 			checkedOut++;
+		}else{
+			release();
+			checkedOut = 0;
+			conn = getConnection();
 		}
 		System.out.println("connection:" + conn);
 		return conn;
