@@ -5,6 +5,7 @@ package qhqx;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -16,6 +17,8 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 
+import org.apache.axis.AxisFault;
+
 import qhqx.ags.GraphicLayerConfig;
 import qhqx.task.IServerTask;
 import qhqx.task.PictureBuilder;
@@ -25,6 +28,7 @@ import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
 import com.esri.adf.web.data.MapFunctionality;
 import com.esri.adf.web.data.TocNode;
+import com.esri.adf.web.data.TocNodeContent;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
 import com.esri.adf.web.data.WebToc;
@@ -33,6 +37,7 @@ import com.esri.adf.web.faces.event.TaskEvent;
 import com.esri.adf.web.util.WebUtil;
 import com.esri.arcgisws.LayerDescription;
 import com.esri.arcgisws.MapLayerInfo;
+import com.esri.arcgisws.MapServerBindingStub;
 
 /**
  * @author yan
@@ -92,7 +97,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		}
 		*/
 		
-		WebToc newToc = new WebToc();
+		/*WebToc newToc = new WebToc();
 		newToc.init(webContext);
 		
 		webContext.getWebToc().destroy();
@@ -106,7 +111,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			for(TocNode n : node.getChildren()){
 				n.setExpanded(false);
 			}
-		}
+		}*/
 		
 		webContext.refresh();
 		//facesContext.responseComplete();
@@ -163,22 +168,22 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			}
 				
 			
-			WebToc newToc = new WebToc();
+			/*WebToc newToc = new WebToc();
 			newToc.init(webContext);
 			
 			webContext.getWebToc().destroy();
 			//newToc.setExpandLevel(3);
-			webContext.setWebToc(newToc);
+			webContext.setWebToc(newToc);*/
 			
 			//webContext.getWebToc().findNode("显示站名").getChildren().clear();
-			Iterator<TocNode> rootNodes = webContext.getWebToc().getRootNodes().iterator();
+			/*Iterator<TocNode> rootNodes = webContext.getWebToc().getRootNodes().iterator();
 			rootNodes.next().getChildren().iterator().next().getChildren().clear();
 			for(TocNode node : rootNodes.next().getChildren()){
 				node.setExpanded(true);
 				for(TocNode n : node.getChildren()){
 					n.setExpanded(false);
 				}
-			}
+			}*/
 			
 			webContext.refresh();
 		}
@@ -196,12 +201,12 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			return;
 		}
 		
-		GraphicLayerConfig glf = new GraphicLayerConfig(webContext);
+		/*GraphicLayerConfig glf = new GraphicLayerConfig(webContext);
 		try {
 			glf.addGraphicLayerByPid(paramMap.get(PID).toString());
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		IServerTask task = new PictureBuilder(webContext);
 		task.setWebContext(webContext);
@@ -225,6 +230,9 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		}	
 		
 		task.gpResultDisplay();
+		
+		//webContext.getWebSession().destroy();//尝试立即关闭会话
+		
 	}
 
 	/**
@@ -262,6 +270,30 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		WebToc newToc = new WebToc();
+		newToc.init(webContext);
+		
+		//Toc刷新:调整顺序、组织结构
+		Iterator<TocNode> rootNodes = newToc.getRootNodes().iterator();
+		TocNode graphicResNode = rootNodes.next();
+		for(TocNode n : graphicResNode.getChildren()){
+			n.getChildren().clear();
+		}
+		
+		TocNode localResNode = rootNodes.next();
+		//localResNode.getChildren().iterator().next().getChildren().addAll(graphicResNode.getChildren());
+		//webContext.getWebToc().getRootNodes().remove(graphicResNode);
+		
+		for(TocNode node : localResNode.getChildren()){
+			node.setExpanded(true);
+			for(TocNode n : node.getChildren()){
+				n.setExpanded(false);
+			}
+		}
+		
+		webContext.getWebToc().destroy();
+		webContext.setWebToc(newToc);
 	}
 
 	public void concentrateQingHai(TaskEvent event){
