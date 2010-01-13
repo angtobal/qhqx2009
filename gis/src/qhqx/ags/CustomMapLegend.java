@@ -79,7 +79,7 @@ public class CustomMapLegend extends LegendInfo {
 	public String printLegendWithUrl() throws AutomationException, IOException{
 		customLegendStyle(12);
 		
-		IImageResult imgResult = buildLegendPic(esriImageReturnType.esriImageReturnURL, 400, 60);
+		IImageResult imgResult = buildLegendPic(esriImageReturnType.esriImageReturnURL, 240, 60);
 		
 		if(lgdImgRetType == esriImageReturnType.esriImageReturnURL){
 			

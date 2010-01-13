@@ -29,6 +29,7 @@ import com.esri.arcgisws.GPServerBindingStub;
 import com.esri.arcgisws.GPString;
 import com.esri.arcgisws.GPToolInfo;
 import com.esri.arcgisws.GPValue;
+import com.esri.arcgisws.LayerDescription;
 
 /**
  * @author yan
@@ -256,7 +257,7 @@ public class GPServerInfo {
 			IOException {
 
 		IRasterLayer rasterLayer = (IRasterLayer) localMapServer.getLayer(
-				mapName, 3 + 3);
+				mapName, 6);
 		CustomRasterRender render = new CustomRasterRender();
 		render.setPid(pid);
 		if (this.featureName != null) {
@@ -272,8 +273,8 @@ public class GPServerInfo {
 		localMapServer.getMap(mapName).deleteLayer(rasterLayer);
 		rasterLayer = render.rasterLayer;
 		localMapServer.getMap(mapName).addLayer(rasterLayer);
-		localMapServer.getMap(mapName).moveLayer(rasterLayer, 1 + 3);
-
+		localMapServer.getMap(mapName).moveLayer(rasterLayer, 7);
+			
 		// IGraphicsContainer container = makeUpSurround(mapName);
 
 		/*
@@ -301,7 +302,6 @@ public class GPServerInfo {
 	protected void changeADFLyrSourceByID() throws AutomationException,
 			IOException {
 		// changeRasterLyrRender();
-
 		for (int i = 4; i < 4 + 3; i++) {
 			/*if (i == 1 || i == 2) {*/
 				mapFunc.getLayerDescriptions()[i].setSourceID(JobID);
@@ -314,8 +314,7 @@ public class GPServerInfo {
 				mapFunc.getLayerDescriptions()[i].setVisible(true);
 			}*/
 		}
-
-		mapFunc.getLayerDescriptions()[1 + 3].setVisible(false);
+		//mapFunc.getLayerDescriptions()[1 + 3].setVisible(true);
 		mapFunc.setCurrentExtent(new WebExtent(89.400228, 31.542524, 104.9,
 				40.339596));
 		// mapFunc.getLayerInfos()[6].setMinScale(0);

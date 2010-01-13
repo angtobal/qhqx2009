@@ -75,13 +75,10 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 		}	
 		
 		try {
-			System.out.println("sort");
-			//this.changeRasterLyrRender();
+			changeRasterLyrRender();
 			sortLayers();
-			System.out.println("sourceID");
-			this.changeADFLyrSourceByID();
-			System.out.println("overview");
-			refreshWebOverview();
+			changeADFLyrSourceByID();
+			//refreshWebOverview();
 			this.exportImage(makeUpSurround(mapName));
 		} catch (AutomationException e) {
 			e.printStackTrace();
@@ -115,13 +112,16 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 	    ImageDescription idesc = new ImageDescription();
 	    idesc.setImageDisplay(disp);
 	    idesc.setImageType(itype);
-		
+	    
+	    mapFunc.getLayerDescriptions()[4].setVisible(false);
+	    
 		MapImage mapim = localResource.getMapServer().exportMapImage(mapFunc.getMapDescription(), idesc);
 		fileOutStream.write(mapim.getImageData());
 		fileOutStream.close();
 		System.out.println("目标文件生成 " + this.fileName);
 		
 		mapFunc.getLayerDescriptions()[1].setVisible(true);
+		mapFunc.getLayerDescriptions()[4].setVisible(true);
 		container.deleteAllElements();
 	}
 
@@ -134,11 +134,8 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 	 */
 	private IGraphicsContainer makeUpSurround(String mapName)
 			throws IOException, AutomationException {
-		//以下可以改到ImageExporter中去，结合更紧密
 		
-		//MapServer mapServer = (MapServer) serverContext.getServerObject();
 		MapServer mapServer = localMapServer;
-		//IMap focusMap = mapServer.getMap(mapServer.getDefaultMapName());
 		IMap focusMap = mapServer.getMap(mapName);
 		IGraphicsContainer container = (IGraphicsContainer)focusMap;
 		
