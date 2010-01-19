@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 
 import qhqx.ags.CustomMapLegend;
+import qhqx.db.MaxMinValue;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
@@ -63,6 +64,11 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 		}
 				
 		try {
+			MaxMinValue value = new MaxMinValue();
+			value.setPid(pid);
+			double[] maxmin = value.selectMaxMinValue();
+			this.setBase(Integer.toString((int)maxmin[0]));
+			this.setInterval(Double.toString(((double)(((int)(maxmin[0] - maxmin[1]) / 8 * 10))) / 10));
 			this.generateContout(MODEL_NAME);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

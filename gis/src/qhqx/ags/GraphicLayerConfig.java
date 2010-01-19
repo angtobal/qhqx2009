@@ -141,9 +141,10 @@ public class GraphicLayerConfig {
 	private WebTrueTypeMarkerSymbol createLabelSymbol(String text, int pos) {
 		WebTrueTypeMarkerSymbol charSymbol = new WebTrueTypeMarkerSymbol();
 		charSymbol.addTextValue(text);
-		charSymbol.setFontName("ËÎÌå");
+		charSymbol.setFontName("Ó×Ô²");
 		charSymbol.setFontSize(11);
 		charSymbol.setFontColor("0,100,0");
+		charSymbol.setOutlineColor("255,255,255");
 		charSymbol.setFontStyle(WebTrueTypeMarkerSymbol.ITALIC);
 		charSymbol.setTextPosition(pos);
 		return charSymbol;
