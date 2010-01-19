@@ -20,6 +20,7 @@ import javax.faces.event.PhaseListener;
 import org.apache.axis.AxisFault;
 
 import qhqx.ags.GraphicLayerConfig;
+import qhqx.db.MaxMinValue;
 import qhqx.task.IServerTask;
 import qhqx.task.PictureBuilder;
 import qhqx.task.RealTimeContour;
@@ -291,6 +292,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				n.setExpanded(false);
 			}
 		}
+		newToc.getRootNodes().remove(rootNodes.next());
 		
 		webContext.getWebToc().destroy();
 		webContext.setWebToc(newToc);

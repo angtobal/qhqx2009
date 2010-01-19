@@ -109,7 +109,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 			fillSymbol.setColor(color);
 			classifyRenderer.setSymbol(classifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
 			
-			classifyRenderer.setLabel(0, " ");
+			classifyRenderer.setLabel(0, " >" + classifyRenderer.getLabel(1).trim());
 		}
 		//classifyRenderer.setSortClassesAscending(false);
 		
