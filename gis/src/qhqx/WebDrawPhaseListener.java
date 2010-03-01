@@ -77,6 +77,8 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		}
 		System.out.println("pid = " + paramMap.get(PID).toString());
 		
+		webContext.getWebGraphics().clearGraphics();
+		
 		if(paramMap.get(Task).toString().equals("realtime")){
 			doRealtimeTask(webContext, paramMap);
 		}else if(paramMap.get(Task).toString().equals("buildpic")){
@@ -156,6 +158,8 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 				return;
 			}
 			System.out.println("pid = " + paramMap.get(PID).toString());
+			
+			webContext.getWebGraphics().clearGraphics();
 			
 			if(paramMap.get(Task).toString().equals("realtime")){
 				doRealtimeTask(webContext, paramMap);

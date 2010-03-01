@@ -149,7 +149,7 @@ public class GPServerInfo {
 
 		GPServerBindingStub gpServer = new GPServerBindingStub(
 				new java.net.URL(gpEndpoint), null);
-		toolInfo = gpServer.getToolInfo(modelName);
+		toolInfo = gpServer.getToolInfo(modelName);//Œ Ã‚
 		resultOpt = new GPResultOptions();
 		resultOpt.setDensifyFeatures(true);
 
