@@ -68,7 +68,8 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 			value.setPid(pid);
 			double[] maxmin = value.selectMaxMinValue();
 			this.setBase(Integer.toString((int)maxmin[0]));
-			this.setInterval(Double.toString(((double)(((int)(maxmin[0] - maxmin[1]) / 8 * 10))) / 10));
+			double tmp = ((double)(((int)(maxmin[0] - maxmin[1]) / 8 * 10))) / 10;
+			this.setInterval(Double.toString((tmp == 0) ? 0.1 : tmp));
 			this.generateContout(MODEL_NAME);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

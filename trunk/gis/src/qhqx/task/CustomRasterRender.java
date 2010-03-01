@@ -91,7 +91,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 				//color.setRGB(0xFF0000);
 				//color.setRGB(a[i]);
 				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-				color.setTransparency((byte)80);
+				color.setTransparency((byte)50);
 				fillSymbol.setColor(color);
 				/*µ÷ÕûË³Ðò*/
 				//int j = classifyRenderer.getClassCount() - i;
