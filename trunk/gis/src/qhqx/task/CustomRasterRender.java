@@ -78,6 +78,45 @@ public class CustomRasterRender extends RasterRenderInfo {
 				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
 				classifyRenderer.setLabel(i, "  " + (double)((int)(classifyRenderer.getBreak(i)*10))/10);
 			}
+		}else if(WeatherRenderInfo.getEnName(featureName).equals("wendu")){
+			for(int i = 0; i < numOfClass - 1; i++){
+				
+				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
+				color.setTransparency((byte)50);
+				fillSymbol.setColor(color);
+			
+				//double正负的问题：0作为起始值或结束值有问题
+				if(WeatherRenderInfo.getBreak(featureName)[i] == 0 && WeatherRenderInfo.getBreak(featureName)[i - 1] > 0){
+					classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i] + 0.000000000000011);
+					classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+					//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+					classifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+					continue;
+				}
+				if(WeatherRenderInfo.getBreak(featureName)[i] < 0 && WeatherRenderInfo.getBreak(featureName)[i - 1] >= 0){
+					classifyRenderer.setBreak(i, -0.000000000000011);
+					classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+					//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+					classifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+					continue;
+				}
+				
+				classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
+				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+				//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+				classifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+				//color = null;
+			}
+			classifyRenderer.setBreak(classifyRenderer.getClassCount() - 1, tmp);
+			classifyRenderer.setLabel(classifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
+			
+			color.setRGB(WeatherRenderInfo.getRGB("wendu")[WeatherRenderInfo.getRGB("wendu").length -1]);
+			color.setTransparency((byte)50);
+			fillSymbol.setColor(color);
+			classifyRenderer.setSymbol(classifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
+			
+			classifyRenderer.setLabel(0, "  >" + classifyRenderer.getLabel(1).trim());
+			
 		}else{//渲染已固定的处理
 			//超过最大值范围，i=0
 			/*color.setRGB(WeatherRenderInfo.getRGB(featureName)[0]);
@@ -90,26 +129,31 @@ public class CustomRasterRender extends RasterRenderInfo {
 				//fillSymbol.setColor((IColor)ramp.getColor(i));
 				//color.setRGB(0xFF0000);
 				//color.setRGB(a[i]);
+				
 				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
 				color.setTransparency((byte)50);
 				fillSymbol.setColor(color);
 				/*调整顺序*/
 				//int j = classifyRenderer.getClassCount() - i;
 				
-				classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
+				
+				//正负的问题：0作为起始值或结束值有问题
+				
+				classifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i] + 0.0000000001);
 				classifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
-				classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+				//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+				classifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
 				//color = null;
 			}
 			classifyRenderer.setBreak(classifyRenderer.getClassCount() - 1, tmp);
-			classifyRenderer.setLabel(classifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[classifyRenderer.getClassCount() - 1]));
+			classifyRenderer.setLabel(classifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
 			
-			color.setRGB(WeatherRenderInfo.getRGB("wendu")[classifyRenderer.getClassCount() -1]);
+			color.setRGB(WeatherRenderInfo.getRGB("wendu")[WeatherRenderInfo.getRGB("wendu").length -1]);
 			color.setTransparency((byte)50);
 			fillSymbol.setColor(color);
 			classifyRenderer.setSymbol(classifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
 			
-			classifyRenderer.setLabel(0, " >" + classifyRenderer.getLabel(1).trim());
+			classifyRenderer.setLabel(0, "  >" + classifyRenderer.getLabel(1).trim());
 		}
 		//classifyRenderer.setSortClassesAscending(false);
 		
@@ -131,7 +175,9 @@ public class CustomRasterRender extends RasterRenderInfo {
 			numOfClass = WeatherRenderInfo.getRGB("wendu").length;
 			/*}*/
 			
-		}else{
+		}/*else if(WeatherRenderInfo.getEnName(featureName).equals("wendu")){
+			numOfClass = WeatherRenderInfo.getBreak(WeatherRenderInfo.getEnName(featureName)).length + 1;
+		}*/else{
 			numOfClass = WeatherRenderInfo.getBreak(WeatherRenderInfo.getEnName(featureName)).length;
 		}
 		return 0;	
