@@ -92,7 +92,7 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 		} catch (IOException e) {
 			e.printStackTrace();
 		} /*finally{*/
-			freeResource();
+		freeResource();
 		//}
 		
 	}
@@ -239,5 +239,8 @@ public class PictureBuilder extends GPServerInfo implements IServerTask{
 	public void setPicHead(String pictureHead) {
 		this.pictureHead = pictureHead;
 	}
-
+	
+	public void freeResource(){
+		super.freeResource();
+	}
 }

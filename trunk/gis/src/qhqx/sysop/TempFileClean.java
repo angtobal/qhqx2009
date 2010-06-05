@@ -6,6 +6,8 @@ package qhqx.sysop;
 import java.io.File;
 import java.util.TimerTask;
 
+import qhqx.server.GISResourceManager;
+
 /**
  * @author Administrator
  *
@@ -18,7 +20,12 @@ public class TempFileClean extends TimerTask {
 	@Override
 	public void run() {
 		deleteDir("c:\\pic\\feature2\\");
-
+		
+		if(GISResourceManager.gpFailedTimes > 16){
+			GISResourceManager grm = GISResourceManager.getInstance();
+			grm.restartGPService();
+			grm.notifyAll();
+		}
 	}
 	public void deleteDir(String dirPath){
 		System.out.println("É¾³ıÁÙÊ±ÎÄ¼ş...");

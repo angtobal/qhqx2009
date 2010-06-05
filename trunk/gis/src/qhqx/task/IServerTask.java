@@ -25,5 +25,7 @@ public interface IServerTask {
 	public void setFeatureName(String featureName);
 	public void setPicHead(String picHead);
 	
-	public void gpResultDisplay() throws IOException;
+	public void gpResultDisplay();
+	
+	public void freeResource();
 }

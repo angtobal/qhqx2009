@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 
 import qhqx.ags.AgsObjAccess;
+import qhqx.server.GISResourceManager;
 
 import com.esri.adf.web.ags.data.AGSLocalMapResource;
 import com.esri.adf.web.ags.data.AGSMapFunctionality;
@@ -21,6 +22,7 @@ import com.esri.arcgis.carto.IRasterLayer;
 import com.esri.arcgis.carto.MapServer;
 import com.esri.arcgis.interop.AutomationException;
 import com.esri.arcgis.server.IServerContext;
+import com.esri.arcgis.server.IServerObjectAdmin;
 import com.esri.arcgisws.EsriJobStatus;
 import com.esri.arcgisws.GPDouble;
 import com.esri.arcgisws.GPResult;
@@ -29,7 +31,6 @@ import com.esri.arcgisws.GPServerBindingStub;
 import com.esri.arcgisws.GPString;
 import com.esri.arcgisws.GPToolInfo;
 import com.esri.arcgisws.GPValue;
-import com.esri.arcgisws.LayerDescription;
 
 /**
  * @author yan
@@ -61,14 +62,21 @@ public class GPServerInfo {
 
 		this.webContext = webContext;
 
-		localResource = (AGSLocalMapResource) this.webContext
-				.getResourceById("ags1");
+		try{
+			localResource = (AGSLocalMapResource) this.webContext.getResourceById("ags1");
 
-		localMapServer = localResource.getLocalMapServer();
-		serverContext = localResource.getServerContext();
-		mapFunc = (AGSMapFunctionality) localResource
+			localMapServer = localResource.getLocalMapServer();
+			serverContext = localResource.getServerContext();
+			mapFunc = (AGSMapFunctionality) localResource
 				.getFunctionality(MapFunctionality.FUNCTIONALITY_NAME);
-
+		}catch(NullPointerException e){
+			e.printStackTrace();
+			GISResourceManager grm = GISResourceManager.getInstance();
+			//grm.restartGPService();
+			grm.restartMapService();
+			grm.notifyAll();
+			System.out.println("arcgis service restarted...");
+		}
 	}
 
 	@SuppressWarnings("static-access")
@@ -120,6 +128,9 @@ public class GPServerInfo {
 				System.out.println(gpServer.getJobStatus(JobID));
 				break;
 			}
+		}
+		if(gpJobStatus == EsriJobStatus.esriJobFailed && waitCount < 2){
+			GISResourceManager.gpFailedTimes += 1;
 		}
 
 		if (gpServer.getResultMapServerName() != null) {
@@ -364,8 +375,10 @@ public class GPServerInfo {
 			System.out.println("resouce released");
 		} catch (AutomationException e) {
 			e.printStackTrace();
+			System.out.println("not released:" + pid + ":" + featureName);
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("not released:" + pid + ":" + featureName);
 		}
 	}
 
