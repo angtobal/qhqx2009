@@ -86,7 +86,6 @@ public class RealTimeContour extends GPServerInfo implements IServerTask{
 		makeUpMap();
 		refreshWebOverview();
 		freeResource();
-		
 	}
 
 	/**
@@ -171,5 +170,8 @@ public class RealTimeContour extends GPServerInfo implements IServerTask{
 		
 		this.picHead = str;
 	}
-
+	
+	public void freeResource(){
+		super.freeResource();
+	}
 }

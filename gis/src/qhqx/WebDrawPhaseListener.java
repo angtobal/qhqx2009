@@ -21,6 +21,7 @@ import org.apache.axis.AxisFault;
 
 import qhqx.ags.GraphicLayerConfig;
 import qhqx.db.MaxMinValue;
+import qhqx.server.GISResourceManager;
 import qhqx.task.IServerTask;
 import qhqx.task.PictureBuilder;
 import qhqx.task.RealTimeContour;
@@ -36,6 +37,9 @@ import com.esri.adf.web.data.WebToc;
 import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.adf.web.faces.event.TaskEvent;
 import com.esri.adf.web.util.WebUtil;
+import com.esri.arcgis.interop.AutomationException;
+import com.esri.arcgis.server.IServerObjectAdmin;
+import com.esri.arcgis.server.ServerObjectAdmin;
 import com.esri.arcgisws.LayerDescription;
 import com.esri.arcgisws.MapLayerInfo;
 import com.esri.arcgisws.MapServerBindingStub;
@@ -78,15 +82,27 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		System.out.println("pid = " + paramMap.get(PID).toString());
 		
 		webContext.getWebGraphics().clearGraphics();
+		//====================================================================
+		/*AGSLocalMapResource resource = (AGSLocalMapResource) webContext.getResourceById("ags1");
+		GISResourceManager grm = GISResourceManager.getInstance();
+		IServerObjectAdmin somAdmin;
+		try {
+			somAdmin = resource.getServerConnection().getServerObjectAdmin();
+			//grm.setSomAdmin(somAdmin);
+			grm.restartGPService();
+			//grm.restartMapService();
+		} catch (AutomationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+		//====================================================================
+
 		
 		if(paramMap.get(Task).toString().equals("realtime")){
 			doRealtimeTask(webContext, paramMap);
 		}else if(paramMap.get(Task).toString().equals("buildpic")){
-			try {
-				doPicbuildTask(webContext, paramMap);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			doPicbuildTask(webContext, paramMap);
 		}
 			
 		/*try {
@@ -160,16 +176,27 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			System.out.println("pid = " + paramMap.get(PID).toString());
 			
 			webContext.getWebGraphics().clearGraphics();
-			
+			//====================================================================
+			/*AGSLocalMapResource resource = (AGSLocalMapResource) webContext.getResourceById("ags1");
+			GISResourceManager grm = GISResourceManager.getInstance();
+			IServerObjectAdmin somAdmin;
+			try {
+				somAdmin = resource.getServerConnection().getServerObjectAdmin();
+				//grm.setSomAdmin(somAdmin);
+				grm.restartGPService();
+				//grm.restartMapService();
+			} catch (AutomationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}*/
+			//====================================================================
+
 			if(paramMap.get(Task).toString().equals("realtime")){
 				doRealtimeTask(webContext, paramMap);
 				
 			}else if(paramMap.get(Task).toString().equals("buildpic")){
-				try {
-					doPicbuildTask(webContext, paramMap);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				doPicbuildTask(webContext, paramMap);
 			}
 				
 			
@@ -200,7 +227,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	 * @throws IOException 
 	 */
 	public void doPicbuildTask(WebContext webContext,
-			Map<String, String> paramMap) throws IOException {
+			Map<String, String> paramMap){
 		if(paramMap.get(FILE_NAME) == null){
 			System.out.println("filename is null");
 			return;
@@ -234,7 +261,9 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			picBuild.setFileName(paramMap.get(FILE_NAME).toString());
 		}	
 		
-		task.gpResultDisplay();
+		
+			task.gpResultDisplay();
+		
 		
 		//webContext.getWebSession().destroy();//尝试立即关闭会话
 		
@@ -270,11 +299,9 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			task.setPicHead(" ");
 		}
 		
-		try {
-			task.gpResultDisplay();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		task.gpResultDisplay();
+		
 		
 		WebToc newToc = new WebToc();
 		newToc.init(webContext);
