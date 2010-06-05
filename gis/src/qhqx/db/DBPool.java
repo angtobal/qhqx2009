@@ -40,8 +40,10 @@ public class DBPool {
 		try{
 			if(dbUserName == null || dbPassWord == null){
 				conn = DriverManager.getConnection(dbConnUrl);
+				//conn = DriverManager.getConnection("jdbc:oracle:thin:@220.167.220.15:1521:sjyrdb");
 			}else{
 				conn = DriverManager.getConnection(dbConnUrl, dbUserName, dbPassWord);
+				//conn = DriverManager.getConnection("jdbc:oracle:thin:@220.167.220.15:1521:sjyrdb", "gx", "gx");
 			}
 		}catch(SQLException e){
 			return null;
