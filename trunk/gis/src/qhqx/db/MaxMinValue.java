@@ -117,7 +117,7 @@ public class MaxMinValue {
 		this.close(rs);
 		this.close(stmt);
 		this.close(conn);
-		System.out.println(maxmin[0] + " " + maxmin[1]);
+		System.out.println("max:" + maxmin[0] + " min:" + maxmin[1]);
 		return maxmin;
 		
 	}

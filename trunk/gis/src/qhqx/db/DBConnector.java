@@ -97,9 +97,10 @@ public class DBConnector {
 	private void init() {
 		InputStream fileInputStream = null;
 		try{
+			fileInputStream = new FileInputStream("c:\\Program Files\\Tomcat\\webapps\\db.properties");
 			//fileInputStream = new FileInputStream(System.getProperty("user.dir") + java.io.File.separator + "db.properties");
 			//fileInputStream = new FileInputStream(System.getProperty("user.dir") + java.io.File.separator + "src" + java.io.File.separator + "db.properties");
-			fileInputStream = new FileInputStream("d:\\workspace\\gis\\src\\db.properties");
+			//fileInputStream = new FileInputStream("d:\\workspace\\gis\\src\\db.properties");
 		}catch(FileNotFoundException e){
 			e.printStackTrace();
 		}
@@ -129,7 +130,8 @@ public class DBConnector {
 	@SuppressWarnings("unchecked")
 	private void loadDriver(Properties props){
 		String driverClasses = props.getProperty("drivers");
-		StringTokenizer strTokenizer = new StringTokenizer(driverClasses);
+//		StringTokenizer strTokenizer = new StringTokenizer(driverClasses);
+		StringTokenizer strTokenizer = new StringTokenizer("oracle.jdbc.driver.OracleDriver");
 		while(strTokenizer.hasMoreElements()){
 			String driverClassName = strTokenizer.nextToken().trim();
 			try{
