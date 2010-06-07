@@ -80,13 +80,13 @@ public class WeatherRenderInfo {
 	 * 0xcde700, 0x99cf17, 0x68b823, 0x0560a7, 0x027fb9, 0x36b1c1, 0xb4e2d8 };
 	 */
 	final static public int[] PRECIPITATION_RGB = {0x330d80, 0xFA00F8,
-		0xf05d04, 0xfcc865, 0x3BA700, 0xA6F48F, 0xffffff};
+		0xf05d04, 0xfcc865, 0x3BA700, 0xA6F48F/*, 0xffffff*/};
 //	final static public int[] PRECIPITATION_RGB = {0xf05d04, 0xfa9200, 0xfcc865, 0xfde37d, 0xfcffac,0xeefdca,0xabf7eb};
 	final static public double[] PRECIPITATION_BREAK = { 0.1, 1, 2, 5, 10, 15,
 			20, 25, 30, 40, 50, 70, 100, 150, 200 };
-	final static public double[] PRECIPITATION_BREAK_12H = {200, 140.0, 70.0, 30.0,
+	final static public double[] PRECIPITATION_BREAK_12H = {/*200,*/ 140.0, 70.0, 30.0,
 			15.0, 5.0, 0.1};
-	final static public double[] PRECIPITATION_BREAK_24H = {300, 250.0, 100.0,
+	final static public double[] PRECIPITATION_BREAK_24H = {/*300,*/ 250.0, 100.0,
 			50.0, 25.0, 10.0, 0.1};
 
 	// ·çËÙ
