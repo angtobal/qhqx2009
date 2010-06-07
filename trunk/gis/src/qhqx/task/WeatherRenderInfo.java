@@ -79,14 +79,15 @@ public class WeatherRenderInfo {
 	 * 0xe04da5, 0xdb0080, 0xf30074, 0xfc4e43, 0xfd9a7b, 0xfecc5d, 0xe5f437,
 	 * 0xcde700, 0x99cf17, 0x68b823, 0x0560a7, 0x027fb9, 0x36b1c1, 0xb4e2d8 };
 	 */
-	final static public int[] PRECIPITATION_RGB = { 0xf9fcd7, 0xd1f9cd,
-			0xa7fac8, 0x6cf2e1, 0x12d7ef, 0x18a0e0, };
+	/*final static public int[] PRECIPITATION_RGB = {0xf9fcd7,0xf9fcd7, 0xd1f9cd,
+			0xa7fac8, 0x6cf2e1, 0x12d7ef, 0x18a0e0, };*/
+	final static public int[] PRECIPITATION_RGB = {0xf05d04, 0xfa9200, 0xfcc865, 0xfde37d, 0xfcffac,0xeefdca,0xabf7eb};
 	final static public double[] PRECIPITATION_BREAK = { 0.1, 1, 2, 5, 10, 15,
 			20, 25, 30, 40, 50, 70, 100, 150, 200 };
-	final static public double[] PRECIPITATION_BREAK_12H = { 140.0, 70.0, 30.0,
-			15.0, 5, 0, 0.1 };
-	final static public double[] PRECIPITATION_BREAK_24H = { 250.0, 100.0,
-			50.0, 25.0, 10.0, 0.1 };
+	final static public double[] PRECIPITATION_BREAK_12H = {200, 140.0, 70.0, 30.0,
+			15.0, 5, 0.1};
+	final static public double[] PRECIPITATION_BREAK_24H = {300, 250.0, 100.0,
+			50.0, 25.0, 10.0, 0.1};
 
 	// ·çËÙ
 	final static public int[] WIND_SPEED_RGB = { 2, 4, 6, 8, 10, 12, 14, 16,
