@@ -132,10 +132,10 @@ public class WindDirectionSpeed  {
 				trueMarkerSymbol.setFontSize(10);
 				trueMarkerSymbol.setFontColor("0,0,255");
 				trueMarkerSymbol
-						.setTextPosition(WebTrueTypeMarkerSymbol.BOTTOM);
+						.setTextPosition(WebTrueTypeMarkerSymbol.RIGHT);
 				trueMarkerSymbol.addTextValue(" 风向：" + direction.toString());
 				WebPoint webPoint = new WebPoint();
-				webPoint.putCoords(geolong, geolat - 0.001);
+				webPoint.putCoords(geolong, geolat);
 
 				if (webPoint != null) {
 					WebGeometry webGeometry = (WebGeometry) webPoint;
@@ -150,10 +150,10 @@ public class WindDirectionSpeed  {
 				trueMarkerSymbo2.setFontSize(10);
 				trueMarkerSymbo2.setFontColor("0,0,255");
 				/*trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.TOP);*/
-				trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.RIGHT);
+				trueMarkerSymbo2.setTextPosition(WebTrueTypeMarkerSymbol.LEFT);
 				trueMarkerSymbo2.addTextValue("风速：" + speed.toString());
 				WebPoint webPoint2 = new WebPoint();
-				webPoint2.putCoords(geolong, geolat - 0.003);
+				webPoint2.putCoords(geolong, geolat);
 
 				if (webPoint != null) {
 					WebGeometry webGeometry = (WebGeometry) webPoint2;
