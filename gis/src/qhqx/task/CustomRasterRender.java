@@ -141,7 +141,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 				fillSymbol.setColor(color);
 				rClassifyRenderer.setSymbol(rClassifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
 				
-				rClassifyRenderer.setLabel(0, "  >" + rClassifyRenderer.getLabel(1).trim());
+				//rClassifyRenderer.setLabel(0, "  " + rClassifyRenderer.getLabel(1).trim());
 			} catch (AutomationException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
