@@ -18,8 +18,11 @@ import com.esri.adf.web.data.OverviewFunctionality;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebOverview;
 import com.esri.adf.web.data.geometry.WebExtent;
+import com.esri.arcgis.carto.IRasterClassifyColorRampRenderer;
 import com.esri.arcgis.carto.IRasterLayer;
+import com.esri.arcgis.carto.IRasterRenderer;
 import com.esri.arcgis.carto.MapServer;
+import com.esri.arcgis.carto.RasterClassifyColorRampRenderer;
 import com.esri.arcgis.interop.AutomationException;
 import com.esri.arcgis.server.IServerContext;
 import com.esri.arcgis.server.IServerObjectAdmin;
@@ -277,14 +280,23 @@ public class GPServerInfo {
 			render.setFeatureName("common");
 			System.out.println("featureName is null");
 		}
+		
+		//======================================================================
+		IRasterRenderer rr = rasterLayer.getRenderer();
+		if(rr instanceof IRasterClassifyColorRampRenderer){
+			IRasterClassifyColorRampRenderer rClassifyRenderer = (IRasterClassifyColorRampRenderer)rr;
+			render.changeRasterClassifyRenderer(rClassifyRenderer, serverContext);
+		}
+		//======================================================================
+
 		// IServerContext serverContext = localResource.getServerContext();
 
-		render.setRasterLayer(rasterLayer);
-		render.renderByRasterClassify(serverContext);
-		localMapServer.getMap(mapName).deleteLayer(rasterLayer);
-		rasterLayer = render.rasterLayer;
-		localMapServer.getMap(mapName).addLayer(rasterLayer);
-		localMapServer.getMap(mapName).moveLayer(rasterLayer, 7);
+//		render.setRasterLayer(rasterLayer);
+//		render.renderByRasterClassify(serverContext);
+//		localMapServer.getMap(mapName).deleteLayer(rasterLayer);
+//		rasterLayer = render.rasterLayer;
+//		localMapServer.getMap(mapName).addLayer(rasterLayer);
+//		localMapServer.getMap(mapName).moveLayer(rasterLayer, 7);
 			
 		// IGraphicsContainer container = makeUpSurround(mapName);
 
