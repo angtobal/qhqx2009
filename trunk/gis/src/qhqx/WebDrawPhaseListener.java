@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import com.esri.adf.web.data.TocNode;
 import com.esri.adf.web.data.TocNodeContent;
 import com.esri.adf.web.data.WebContext;
 import com.esri.adf.web.data.WebContextInitialize;
+import com.esri.adf.web.data.WebLifecycle;
 import com.esri.adf.web.data.WebToc;
 import com.esri.adf.web.data.geometry.WebExtent;
 import com.esri.adf.web.faces.event.TaskEvent;
@@ -48,7 +50,7 @@ import com.esri.arcgisws.MapServerBindingStub;
  * @author yan
  *
  */
-public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize {
+public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize, WebLifecycle {
 
 	/**
 	 * 
@@ -65,6 +67,8 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	private static String Task = "task";
 	private static String FILE_NAME = "filename";
 	private static String PICTURE_HEAD = "describe";
+	
+	private IServerTask task;
 
 	@SuppressWarnings("unchecked")
 	public void afterPhase(PhaseEvent event) {
@@ -74,7 +78,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		Map<String, String> paramMap = externalContext.getRequestParameterMap();
 		
 		WebContext webContext = WebUtil.getWebContext(facesContext.getViewRoot());
-		
+		webContext.getWebSession();
 		if(paramMap.get(PID) == null || paramMap.get(BASE) == null || paramMap.get(INTERVAL) == null){
 			System.out.println("pid base or interval is null");
 			return;
@@ -82,6 +86,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		System.out.println("pid = " + paramMap.get(PID).toString());
 		
 		webContext.getWebGraphics().clearGraphics();
+
 		//====================================================================
 		/*AGSLocalMapResource resource = (AGSLocalMapResource) webContext.getResourceById("ags1");
 		GISResourceManager grm = GISResourceManager.getInstance();
@@ -133,13 +138,14 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 		}*/
 		
 		webContext.refresh();
-		//facesContext.responseComplete();
-		
+		facesContext.responseComplete();
+		facesContext.getCurrentInstance().release();
 		
 	}
 
 	@SuppressWarnings("unchecked")
 	public void beforePhase(PhaseEvent event) {
+		System.out.println("beforPhase");
 		FacesContext facesContext = event.getFacesContext();
 		ExternalContext externalContext = facesContext.getExternalContext();
 		@SuppressWarnings("unused")
@@ -156,7 +162,8 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	 * @see com.esri.adf.web.data.WebContextInitialize#destroy()
 	 */
 	public void destroy() {
-		
+		task.freeResource();
+		//System.out.println("destroy:" + new Date());
 	}
 
 	/* (non-Javadoc)
@@ -166,7 +173,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	public void init(WebContext webContext) {
 		//wctx
 		System.out.println("task listern");
-		
+		System.out.println("init:" + new Date());
 		if(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap() != null){
 			Map<String, String> paramMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 			if(paramMap.get(PID) == null || paramMap.get(BASE) == null || paramMap.get(INTERVAL) == null){
@@ -240,7 +247,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			e.printStackTrace();
 		}*/
 		
-		IServerTask task = new PictureBuilder(webContext);
+		task = new PictureBuilder(webContext);
 		task.setWebContext(webContext);
 		task.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
 		task.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
@@ -283,7 +290,7 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 			e.printStackTrace();
 		}
 		
-		IServerTask task = new RealTimeContour(webContext);
+		task = new RealTimeContour(webContext);
 		task.setEndpoint("http://localhost:8399/arcgis/services/GIS/GPServer?");
 		task.setMapEndpoint("http://localhost:8399/arcgis/services/GIS/MapServer");
 		task.setLocalMapResID("ags1");
@@ -332,5 +339,19 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	public void concentrateQingHai(TaskEvent event){
 		WebContext ctx = event.getWebContext();
 		ctx.getWebMap().setCurrentExtent(new WebExtent(90,30,100,35));
+	}
+
+	/* (non-Javadoc)
+	 * @see com.esri.adf.web.data.WebLifecycle#activate()
+	 */
+	public void activate() {
+		//System.out.println("activate");
+	}
+
+	/* (non-Javadoc)
+	 * @see com.esri.adf.web.data.WebLifecycle#passivate()
+	 */
+	public void passivate() {
+		System.out.println("passivate");
 	}
 }
