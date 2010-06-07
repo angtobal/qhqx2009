@@ -29,6 +29,129 @@ public class CustomRasterRender extends RasterRenderInfo {
 	private String pid;
 	private int numOfClass;
 	
+	//Start====================================================================
+	public void changeRasterClassifyRenderer(IRasterClassifyColorRampRenderer rClassifyRenderer, IServerContext serverContext){
+		countNumOfClass();
+		IFillSymbol fillSymbol = null;
+		IColor color = null;
+		try {
+			rClassifyRenderer.setClassCount(numOfClass);
+			fillSymbol = (IFillSymbol)serverContext.createObject(SimpleFillSymbol.getClsid());
+			color = (IColor)serverContext.createObject(RgbColor.getClsid());
+		} catch (AutomationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		double tmp = 0;
+		if(WeatherRenderInfo.getEnName(featureName).equals("common")
+				|| WeatherRenderInfo.getEnName(featureName).equals("fengsu")
+				|| WeatherRenderInfo.getEnName(featureName).equals("qiya")){
+			double rgbSelectInterval = 0;
+			int numOfColor = WeatherRenderInfo.getRGB("wendu").length;
+			RenderBreaker rb = new RenderBreaker(pid);
+			rgbSelectInterval = (rb.getMax() - rb.getMin())/numOfColor;
+			tmp = rb.getMax();
+			for(int i = 0; i < numOfColor; i++){
+				try {
+					color.setRGB(WeatherRenderInfo.getRGB("wendu")[i]);
+					color.setTransparency((byte)80);
+					fillSymbol.setColor(color);
+					rClassifyRenderer.setBreak(i, tmp);
+					tmp -= rgbSelectInterval; 
+					rClassifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+					rClassifyRenderer.setLabel(i, "  " + (double)((int)(rClassifyRenderer.getBreak(i)*10))/10);
+				} catch (AutomationException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}else if(WeatherRenderInfo.getEnName(featureName).equals("wendu")){
+			for(int i = 0; i < numOfClass - 1; i++){
+				try {
+					color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
+					color.setTransparency((byte)80);
+					fillSymbol.setColor(color);
+				
+					//double正负的问题：0作为起始值或结束值有问题
+					if(WeatherRenderInfo.getBreak(featureName)[i] == 0 && WeatherRenderInfo.getBreak(featureName)[i - 1] > 0){
+						rClassifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i] + 0.000000000000011);
+						rClassifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+						//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+						rClassifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+						continue;
+					}
+					if(WeatherRenderInfo.getBreak(featureName)[i] < 0 && WeatherRenderInfo.getBreak(featureName)[i - 1] >= 0){
+						rClassifyRenderer.setBreak(i, -0.000000000000011);
+						rClassifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+						//classifyRenderer.setLabel(i, "  " + classifyRenderer.getBreak(i));
+						rClassifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+						continue;
+					}
+					
+					rClassifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
+					rClassifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+					rClassifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+				} catch (AutomationException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			}
+			try {
+				rClassifyRenderer.setBreak(rClassifyRenderer.getClassCount() - 1, tmp);
+				rClassifyRenderer.setLabel(rClassifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
+				
+				color.setRGB(WeatherRenderInfo.getRGB("wendu")[WeatherRenderInfo.getRGB("wendu").length -1]);
+				color.setTransparency((byte)50);
+				fillSymbol.setColor(color);
+				rClassifyRenderer.setSymbol(rClassifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
+				
+				rClassifyRenderer.setLabel(0, "  >" + rClassifyRenderer.getLabel(1).trim());
+			} catch (AutomationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else{
+			
+			for(int i = 0; i < numOfClass - 1; i++){
+				try {
+					color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
+					color.setTransparency((byte)50);
+					fillSymbol.setColor(color);
+					
+					rClassifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
+					rClassifyRenderer.setSymbol(i, (ISymbol) fillSymbol);
+					rClassifyRenderer.setLabel(i, "  " + WeatherRenderInfo.getBreak(featureName)[i]);
+				} catch (AutomationException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				rClassifyRenderer.setBreak(rClassifyRenderer.getClassCount() - 1, tmp);
+				rClassifyRenderer.setLabel(rClassifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
+				
+				color.setRGB(WeatherRenderInfo.getRGB(featureName)[WeatherRenderInfo.getRGB(featureName).length -1]);
+				color.setTransparency((byte)50);
+				fillSymbol.setColor(color);
+				rClassifyRenderer.setSymbol(rClassifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
+				
+				rClassifyRenderer.setLabel(0, "  >" + rClassifyRenderer.getLabel(1).trim());
+			} catch (AutomationException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		System.out.println(new Date() + " rendered");
+	}
+	//End====================================================================
 	
 	//分级渲染raster
 	public void renderByRasterClassify(IServerContext serverContext) throws AutomationException, IOException{
@@ -80,9 +203,8 @@ public class CustomRasterRender extends RasterRenderInfo {
 			}
 		}else if(WeatherRenderInfo.getEnName(featureName).equals("wendu")){
 			for(int i = 0; i < numOfClass - 1; i++){
-				
 				color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-				color.setTransparency((byte)50);
+				color.setTransparency((byte)80);
 				fillSymbol.setColor(color);
 			
 				//double正负的问题：0作为起始值或结束值有问题
