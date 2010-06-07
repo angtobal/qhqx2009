@@ -352,6 +352,6 @@ public class WebDrawPhaseListener implements PhaseListener, WebContextInitialize
 	 * @see com.esri.adf.web.data.WebLifecycle#passivate()
 	 */
 	public void passivate() {
-		System.out.println("passivate");
+		//System.out.println("passivate");
 	}
 }
