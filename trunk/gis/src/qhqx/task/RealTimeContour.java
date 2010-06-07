@@ -47,13 +47,13 @@ public class RealTimeContour extends GPServerInfo implements IServerTask{
 		
 		//AGSLocalMapResource localResource = (AGSLocalMapResource) webContext.getResourceById(localMapResID);
 		//MapServer localMapServer = localResource.getLocalMapServer();
-		try {
-			localMapServer.refreshServerObjects();
-		} catch (AutomationException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+//		try {
+//			localMapServer.refreshServerObjects();
+//		} catch (AutomationException e1) {
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			e1.printStackTrace();
+//		}
 		
 		try {
 			try {
@@ -69,6 +69,7 @@ public class RealTimeContour extends GPServerInfo implements IServerTask{
 				e.printStackTrace();
 			}
 		} catch (InterruptedException e) {
+//		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -85,7 +86,7 @@ public class RealTimeContour extends GPServerInfo implements IServerTask{
 		
 		makeUpMap();
 		refreshWebOverview();
-		freeResource();
+		//freeResource();
 	}
 
 	/**
