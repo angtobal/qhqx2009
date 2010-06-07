@@ -32,7 +32,7 @@ public class GISResourceManager {
 	private GISResourceManager(){
 		try {
 			agsConn = new ServerConnection();
-			agsConn.connect("localhost", "localhost", "administrator", "ibm3950sjy");
+			agsConn.connect("localhost", "localhost", "arcgismanager", "gis");
 			this.somAdmin = agsConn.getServerObjectAdmin();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
