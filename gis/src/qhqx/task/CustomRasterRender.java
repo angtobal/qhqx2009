@@ -55,7 +55,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 			for(int i = 0; i < numOfColor; i++){
 				try {
 					color.setRGB(WeatherRenderInfo.getRGB("wendu")[i]);
-					color.setTransparency((byte)80);
+					color.setTransparency((byte)128);
 					fillSymbol.setColor(color);
 					rClassifyRenderer.setBreak(i, tmp);
 					tmp -= rgbSelectInterval; 
@@ -71,7 +71,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 			for(int i = 0; i < numOfClass - 1; i++){
 				try {
 					color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-					color.setTransparency((byte)80);
+					color.setTransparency((byte)128);
 					fillSymbol.setColor(color);
 				
 					//double正负的问题：0作为起始值或结束值有问题
@@ -105,7 +105,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 				rClassifyRenderer.setLabel(rClassifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
 				
 				color.setRGB(WeatherRenderInfo.getRGB("wendu")[WeatherRenderInfo.getRGB("wendu").length -1]);
-				color.setTransparency((byte)50);
+				color.setTransparency((byte)128);
 				fillSymbol.setColor(color);
 				rClassifyRenderer.setSymbol(rClassifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
 				
@@ -120,7 +120,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 			for(int i = 0; i < numOfClass - 1; i++){
 				try {
 					color.setRGB(WeatherRenderInfo.getRGB(featureName)[i]);
-					color.setTransparency((byte)50);
+					color.setTransparency((byte)128);
 					fillSymbol.setColor(color);
 					
 					rClassifyRenderer.setBreak(i, WeatherRenderInfo.getBreak(featureName)[i]);
@@ -137,7 +137,7 @@ public class CustomRasterRender extends RasterRenderInfo {
 				rClassifyRenderer.setLabel(rClassifyRenderer.getClassCount() - 1, "  " + Double.toString(WeatherRenderInfo.getBreak(featureName)[WeatherRenderInfo.getBreak(featureName).length - 1]));
 				
 				color.setRGB(WeatherRenderInfo.getRGB(featureName)[WeatherRenderInfo.getRGB(featureName).length -1]);
-				color.setTransparency((byte)50);
+				color.setTransparency((byte)128);
 				fillSymbol.setColor(color);
 				rClassifyRenderer.setSymbol(rClassifyRenderer.getClassCount() - 1, (ISymbol) fillSymbol);
 				
